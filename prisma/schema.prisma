@@ -1,0 +1,103 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["mongoDb"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @default(uuid())
+  username String   @unique
+  email    String?  @unique
+  phone    String?  @unique
+  password String  
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Category {
+  id String @id @default(uuid())
+  category_name String @unique
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  Product    Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id String @id @default(uuid())
+  product_code String 
+  product_name String 
+
+  is_composite Boolean @default(false)
+
+  category_id String
+  Category    Category @relation(fields: [category_id], references: [id])
+
+  unit_id String
+  Unit    Unit @relation(fields: [unit_id], references: [id])
+  
+  instock InStock[]
+
+  created_at    DateTime        @default(now())
+  updated_at    DateTime        @updatedAt
+
+  @@map("products")
+}
+// model Composite {
+//    id String @id @default(auto()) @map("_id") @db.ObjectId
+//    product_id String
+//    Product Product @relation(fields:[product_id],references: [id])
+//    unit_id String
+//    Unit    Unit @relation(fields: [unit_id], references: [id])
+
+//    created_at    DateTime        @default(now())
+//    updated_at    DateTime        @updatedAt
+
+//   @@map("composite")
+
+// }
+model Unit {
+  id String @id @default(uuid())
+  unit_name String @unique
+
+  product Product[]
+  // composite Composite[]
+
+  created_at    DateTime        @default(now())
+  updated_at    DateTime        @updatedAt
+
+  @@map("units")
+}
+
+model Batch {
+  id String @id @default(uuid())
+  batch_name String @unique
+  instock InStock[]
+  created_at    DateTime        @default(now())
+  updated_at    DateTime        @updatedAt
+
+  @@map("batches")
+}
+
+
+model InStock {
+  id String @id @default(uuid())
+  batch_id String
+  batch Batch @relation(fields:[batch_id],references: [id])
+  product_id String
+  product Product @relation(fields:[product_id],references: [id])
+  quantity           Int
+  created_at         DateTime      @default(now())
+  updated_at         DateTime      @updatedAt
+
+  @@map("instocks")
+}
