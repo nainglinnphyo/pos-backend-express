@@ -1,7 +1,16 @@
 import { PrismaClient } from '@prisma/client';
-const { inStock,batch,instockOnProduct } = new PrismaClient();
+const { inStock,batch,instockOnProduct,warehouse } = new PrismaClient();
 
 export class Instock {
+     async fetchWarehouse({callback}){
+           await warehouse.findMany()
+           .then((data)=>{
+               callback(null, data)
+           })
+           .catch((error)=>{
+               callback(error,null);
+           })
+     }
      async createInstock({warehouse_id,supplier_id,instock,callback }) {
           if(instock.length > 0){
                const batchData = await batch.create({

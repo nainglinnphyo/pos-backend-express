@@ -45,7 +45,7 @@ export class User {
         const token = jwt.sign(
           { id: emailExit.id.toString() },
           process.env.TOKEN_SECRET || "YAMA",
-          { expiresIn: "1hr" }
+          { expiresIn: "12hr" }
         );
         callback(null, { ...emailExit, token: token });
       } else {

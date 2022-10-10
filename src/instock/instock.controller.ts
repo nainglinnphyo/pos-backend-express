@@ -9,6 +9,41 @@ interface IProduct{
      
 }
 
+const fetchWarehouse =  async (req: Request, res: Response)=>{
+     const instock = new Instock();
+     try {
+          const data = await instock.fetchWarehouse({callback:(err: any, data: any)=>{
+               if (err) {
+                    return Responser({
+                         res: res,
+                         status: 400,
+                         body: null,
+                         message: "Somethin went wrong with warehouse fetch",
+                         devMessage: err.message,
+                    });
+               } else if (data) {
+                    return Responser({
+                         res: res,
+                         status: 200,
+                         body: data,
+                         message: "Warehouse Fetch Success!",
+                         devMessage: "",
+                    });
+               } else {
+                    return Responser({
+                         res: res,
+                         status: 500,
+                         body: null,
+                         message: err,
+                         devMessage: err.message,
+                    });
+               }
+          }})
+     } catch (error) {
+          
+     }
+}
+
 const createInstock = async (req: Request, res: Response) => {
      const inStock = new Instock();
      try {
@@ -21,7 +56,7 @@ const createInstock = async (req: Request, res: Response) => {
                               res: res,
                               status: 400,
                               body: null,
-                              message: "Somethin went wrong with product create",
+                              message: "Somethin went wrong with instock create",
                               devMessage: err.message,
                          });
                     } else if (data) {
@@ -29,7 +64,7 @@ const createInstock = async (req: Request, res: Response) => {
                               res: res,
                               status: 201,
                               body: data,
-                              message: "Product Create Success!",
+                              message: "Instock Create Success!",
                               devMessage: "",
                          });
                     } else {
@@ -56,4 +91,4 @@ const createInstock = async (req: Request, res: Response) => {
 }
 
 
-export const instockController = { createInstock };
+export const instockController = { createInstock,fetchWarehouse };

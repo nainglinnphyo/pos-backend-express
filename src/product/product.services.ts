@@ -27,6 +27,11 @@ export class Product {
         include:{
           Unit:true,
           Category:true,
+          instockOnProudct:{
+            select:{
+              total_quantity:true
+            }
+          }
         }
       })
       .then((data)=>{
