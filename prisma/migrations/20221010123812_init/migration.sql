@@ -40,6 +40,32 @@ CREATE TABLE `products` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `suppliers` (
+    `id` VARCHAR(191) NOT NULL,
+    `supplier_name` VARCHAR(191) NOT NULL,
+    `short_name` VARCHAR(191) NULL,
+    `address` VARCHAR(191) NULL,
+    `phone` VARCHAR(191) NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `customers` (
+    `id` VARCHAR(191) NOT NULL,
+    `customer_name` VARCHAR(191) NOT NULL,
+    `short_name` VARCHAR(191) NULL,
+    `address` VARCHAR(191) NULL,
+    `phone` VARCHAR(191) NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `units` (
     `id` VARCHAR(191) NOT NULL,
     `unit_name` VARCHAR(191) NOT NULL,
@@ -66,7 +92,30 @@ CREATE TABLE `instocks` (
     `id` VARCHAR(191) NOT NULL,
     `batch_id` VARCHAR(191) NOT NULL,
     `product_id` VARCHAR(191) NOT NULL,
+    `supplier_id` VARCHAR(191) NOT NULL,
     `quantity` INTEGER NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `instock_on_products` (
+    `id` VARCHAR(191) NOT NULL,
+    `product_id` VARCHAR(191) NOT NULL,
+    `total_quantity` INTEGER NOT NULL,
+    `warehouse_id` VARCHAR(191) NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `warehouses` (
+    `id` VARCHAR(191) NOT NULL,
+    `warehouse_name` VARCHAR(191) NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
@@ -84,3 +133,12 @@ ALTER TABLE `instocks` ADD CONSTRAINT `instocks_batch_id_fkey` FOREIGN KEY (`bat
 
 -- AddForeignKey
 ALTER TABLE `instocks` ADD CONSTRAINT `instocks_product_id_fkey` FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `instocks` ADD CONSTRAINT `instocks_supplier_id_fkey` FOREIGN KEY (`supplier_id`) REFERENCES `suppliers`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `instock_on_products` ADD CONSTRAINT `instock_on_products_product_id_fkey` FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `instock_on_products` ADD CONSTRAINT `instock_on_products_warehouse_id_fkey` FOREIGN KEY (`warehouse_id`) REFERENCES `warehouses`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

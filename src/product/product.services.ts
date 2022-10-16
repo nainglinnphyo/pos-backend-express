@@ -27,7 +27,7 @@ export class Product {
         include:{
           Unit:true,
           Category:true,
-          instockOnProudct:{
+          instockOnProduct:{
             select:{
               total_quantity:true
             }

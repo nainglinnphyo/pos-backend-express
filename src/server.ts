@@ -39,34 +39,28 @@ app.use('/uploads', express.static(`${__dirname}/../uploads`));
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options));
 
-app.get("/api/v1/test",async (req:Request, res:Response) => {
-	try {
-	const test = async (filePath: fs.PathLike) => {
-		await readXlsxFile(fs.createReadStream(filePath)).then(async (rows) => {
-		    rows.shift()
-			rows.forEach(async (row:any) => {
-				const name = row[0]
-				const s_name = row[1]
-				const addres = row[2]
-				const phone = row[3]
-
-			await customer.create({
-				data:{
-					customers:row[0] ? row[0].toString() : "",
-					short_name:row[1] ? row[1].toString() : "",
-					address:row[2] ? row[2].toString() : "",
-					phone:row[3] ? row[3].toString() : "",
-				}
-			})	
-		    })
-		})
-	 }
-	 test("/Users/nainglinnphyo/Desktop/For Future/Yama-Backend/supplier.xlsx");
-	 return res.send("ok");
-	} catch (error) {
-		console.log(error.message)
-	}
-})
+// app.get("/api/v1/test",async (req:Request, res:Response) => {
+// 	try {
+// 	const test = async (filePath: fs.PathLike) => {
+// 		await readXlsxFile(fs.createReadStream(filePath)).then(async (rows) => {
+// 		    rows.shift()
+// 			rows.forEach(async (row:any) => {
+// 			await customer.create({
+// 				data:{
+// 					customer_name:row[0] ? row[0].toString() : "",
+// 					short_name:row[1] ? row[1].toString() : "",
+// 					phone:row[2] ? row[2].toString() : "",
+// 				}
+// 			})	
+// 		    })
+// 		})
+// 	 }
+// 	 test("/Users/nainglinnphyo/Desktop/For Future/Yama-Backend/supplier.xlsx");
+// 	 return res.send("ok");
+// 	} catch (error) {
+// 		console.log(error.message)
+// 	}
+// })
 
 if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'development') {
 	app.use("/api/v1/", routes);

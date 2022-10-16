@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["mongoDb"]
+  binaryTargets=["native", "darwin"]
 }
 
 datasource db {
@@ -46,7 +46,7 @@ model Product {
   Unit    Unit @relation(fields: [unit_id], references: [id])
   
   instock InStock[]
-  instockOnProudct instockOnProduct[]
+  instockOnProduct instockOnProduct[]
 
   created_at    DateTime        @default(now())
   updated_at    DateTime        @updatedAt
@@ -69,7 +69,7 @@ model Supplier {
 }
 model Customer {
     id String @id @default(uuid())
-    customers String
+    customer_name String
     short_name String?
     address String?
     phone String?
