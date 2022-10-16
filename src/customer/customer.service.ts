@@ -12,4 +12,21 @@ export class Customer {
           })
      }
 
+     async createCustomer({customer_name,short_name,phone,address,callback}){
+          await customer.create({
+               data:{
+                    customer_name:customer_name,
+                    short_name:short_name,
+                    phone:phone,
+                    address: address
+               }
+          })
+          .then((data)=>{
+               callback(null, data)
+          })
+          .catch((err) => {
+               callback(err,null)
+          })
+     }
+
 }

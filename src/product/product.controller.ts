@@ -5,16 +5,17 @@ import { Product } from './product.services';
 interface IProduct{
      product_name: string;
      product_code: string;
-     category_id:number
+     category_id:number;
+     unit_id:string;
      
 }
 
 const createProduct = async (req: Request, res: Response) => {
      const product = new Product();
      try {
-          const { product_code,product_name,category_id }: IProduct = req.body;
+          const { product_code,product_name,category_id,unit_id }: IProduct = req.body;
           const data = await product.createProdcut({
-              product_code,product_name,category_id,
+              product_code,product_name,category_id,unit_id,
                callback: (err: any, data: any) => {
                     if (err) {
                          return Responser({

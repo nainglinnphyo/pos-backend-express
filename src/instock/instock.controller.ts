@@ -90,5 +90,41 @@ const createInstock = async (req: Request, res: Response) => {
 
 }
 
+const fetchStockRecord = async (req: Request, res: Response) => {
+     const inStock = new Instock();
+     try {
+          const data = await inStock.fetchStockRecord({
+               callback:(err: any, data: any)=>{
+                    if (err) {
+                         return Responser({
+                              res: res,
+                              status: 400,
+                              body: null,
+                              message: "Somethin went wrong with instock fetch",
+                              devMessage: err.message,
+                         });
+                    } else if (data) {
+                         return Responser({
+                              res: res,
+                              status: 201,
+                              body: data,
+                              message: "Instock fetch Success!",
+                              devMessage: "",
+                         });
+                    } else {
+                         return Responser({
+                              res: res,
+                              status: 500,
+                              body: null,
+                              message: err,
+                              devMessage: err.message,
+                         });
+                    }
+               }
+          })
+     } catch (error) {
+          
+     }
+}
 
-export const instockController = { createInstock,fetchWarehouse };
+export const instockController = { createInstock,fetchWarehouse ,fetchStockRecord};

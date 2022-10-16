@@ -66,4 +66,20 @@ export class Instock {
           }
      }
 
+     async fetchStockRecord ({callback}){
+          await inStock.findMany({
+               include:{
+                    product:true,
+                    batch:true,
+                    supplier:true,
+               },
+               orderBy:{
+                    created_at:'desc'
+               }
+          })
+          .then((data) =>callback(null,data))
+          .catch((e)=>callback(e,null))
+          
+     }
+
 }
