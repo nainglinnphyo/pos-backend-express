@@ -1,6 +1,13 @@
 generator client {
-  provider = "prisma-client-js"
-  binaryTargets=["native", "darwin"]
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "darwin"]
+}
+
+generator dbml {
+  provider            = "prisma-dbml-generator"
+  outputName          = "yama.dbml"
+  projectName         = "Yama"
+  projectDatabaseType = "mysql"
 }
 
 datasource db {
@@ -9,11 +16,13 @@ datasource db {
 }
 
 model User {
-  id String @id @default(uuid())
-  username String   @unique
-  email    String?  @unique
-  phone    String?  @unique
-  password String  
+  id       String  @id @default(uuid())
+  username String  @unique
+  email    String? @unique
+  phone    String? @unique
+  password String
+
+  Transaction Transaction[]
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -21,138 +30,237 @@ model User {
   @@map("users")
 }
 
+// product schemas
+
 model Category {
-  id String @id @default(uuid())
+  id            String @id @default(uuid())
   category_name String @unique
 
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
-  Product    Product[]
+  Product Product[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   @@map("categories")
 }
 
 model Product {
-  id String @id @default(uuid())
-  product_code String 
-  product_name String 
-
-  is_composite Boolean @default(false)
+  id           String @id @default(uuid())
+  product_code String
+  product_name String
 
   category_id String
   Category    Category @relation(fields: [category_id], references: [id])
+  unit_id     String
+  Unit        Unit     @relation(fields: [unit_id], references: [id])
 
-  unit_id String
-  Unit    Unit @relation(fields: [unit_id], references: [id])
-  
-  instock InStock[]
-  instockOnProduct instockOnProduct[]
+  InStockVoucher   InStockVoucher[]
+  Instock          Instock[]
+  ProductPriceList ProductPriceList[]
+  Composite        Composite[]
 
-  created_at    DateTime        @default(now())
-  updated_at    DateTime        @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   @@map("products")
 }
 
-model Supplier {
-    id String @id @default(uuid())
-    supplier_name String
-    short_name String?
-    address String?
-    phone String?
+model Price {
+  id   String @id @default(uuid())
+  name String
 
-    instock InStock[]
-    created_at    DateTime        @default(now())
-    updated_at    DateTime        @updatedAt
+  ProductPriceList   ProductPriceList[]
+  CompositePriceList CompositePriceList[]
 
-  @@map("suppliers")
-}
-model Customer {
-    id String @id @default(uuid())
-    customer_name String
-    short_name String?
-    address String?
-    phone String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-    created_at    DateTime        @default(now())
-    updated_at    DateTime        @updatedAt
-
-  @@map("customers")
-
+  @@map("prices")
 }
 
+model ProductPriceList {
+  id     String @id @default(uuid())
+  amount Float
 
-// model Composite {
-//    id String @id @default(auto()) @map("_id") @db.ObjectId
-//    product_id String
-//    Product Product @relation(fields:[product_id],references: [id])
-//    unit_id String
-//    Unit    Unit @relation(fields: [unit_id], references: [id])
+  product_id String
+  Product    Product @relation(fields: [product_id], references: [id])
+  price_id   String
+  Price      Price   @relation(fields: [price_id], references: [id])
 
-//    created_at    DateTime        @default(now())
-//    updated_at    DateTime        @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-//   @@map("composite")
+  @@map("product_price_list")
+}
 
-// }
+model Composite {
+  id       String @id @default(uuid())
+  name     String
+  per_unit Float
+
+  product_id String
+  Product    Product @relation(fields: [product_id], references: [id])
+  unit_id    String
+  Unit       Unit    @relation(fields: [unit_id], references: [id])
+
+  CompositePriceList CompositePriceList[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("composite")
+}
+
+model CompositePriceList {
+  id     String @id @default(uuid())
+  amount Float
+
+  composite_id String
+  Composite    Composite @relation(fields: [composite_id], references: [id])
+  price_id     String
+  Price        Price     @relation(fields: [price_id], references: [id])
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("composite_price_list")
+}
 
 model Unit {
-  id String @id @default(uuid())
+  id        String @id @default(uuid())
   unit_name String @unique
 
-  product Product[]
-  // composite Composite[]
+  Product   Product[]
+  Composite Composite[]
 
-  created_at    DateTime        @default(now())
-  updated_at    DateTime        @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   @@map("units")
 }
 
-model Batch {
-  id String @id @default(uuid())
-  batch_name String @unique
-  instock InStock[]
-  created_at    DateTime        @default(now())
-  updated_at    DateTime        @updatedAt
+// static data schemas
 
-  @@map("batches")
+model Supplier {
+  id            String  @id @default(uuid())
+  supplier_name String
+  short_name    String?
+  address       String?
+  phone         String?
+
+  InStockVoucher InStockVoucher[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("suppliers")
 }
 
+model Customer {
+  id            String  @id @default(uuid())
+  customer_name String
+  short_name    String?
+  address       String?
+  phone         String?
 
-model InStock {
-  id String @id @default(uuid())
-  batch_id String
-  batch Batch @relation(fields:[batch_id],references: [id])
-  product_id String
-  product Product @relation(fields:[product_id],references: [id])
-  supplier_id String
-  supplier Supplier @relation(fields:[supplier_id],references: [id])
-  quantity           Int
-  created_at         DateTime      @default(now())
-  updated_at         DateTime      @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  @@map("instocks")
+  @@map("customers")
 }
-model instockOnProduct {
-  id String @id @default(uuid())
-  product_id String
-  product Product @relation(fields:[product_id],references: [id])
-  total_quantity Int
-  warehouse_id String
-  Warehouse Warehouse @relation(fields:[warehouse_id],references: [id])
 
-  created_at         DateTime      @default(now())
-  updated_at         DateTime      @updatedAt
-
-  @@map("instock_on_products")
-}
 model Warehouse {
-  id String @id @default(uuid())
+  id             String @id @default(uuid())
   warehouse_name String
-  instockOnProduct instockOnProduct[]
-  created_at         DateTime      @default(now())
-  updated_at         DateTime      @updatedAt
+
+  Instock Instock[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   @@map("warehouses")
+}
+
+// stock data schemas
+
+model InStockVoucher {
+  id                String         @id @default(uuid())
+  discount          Float?
+  total             Float
+  round_adjustment  Float?
+  voucher_status_id String?
+  Voucher_Status    VoucherStatus? @relation(fields: [voucher_status_id], references: [id])
+
+  product_id  String
+  Product     Product  @relation(fields: [product_id], references: [id])
+  supplier_id String
+  Supplier    Supplier @relation(fields: [supplier_id], references: [id])
+
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+  Transaction Transaction[]
+
+  @@map("instock_voucher")
+}
+
+model Instock {
+  id String @id @default(uuid())
+
+  total_quantity   Int
+  foc              Int?  @default(0)
+  discount_on_item Int?  @default(0)
+  total_amount     Float
+
+  product_id   String
+  Product      Product   @relation(fields: [product_id], references: [id])
+  warehouse_id String
+  Warehouse    Warehouse @relation(fields: [warehouse_id], references: [id])
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("instock")
+}
+
+model Transaction {
+  id      String  @id @default(uuid())
+  paid    Float
+  balance Float
+  remark  String?
+
+  issued_by_id       String?
+  Issued_By          User?           @relation(fields: [issued_by_id], references: [id])
+  instock_voucher_id String?
+  InStockVoucher     InStockVoucher? @relation(fields: [instock_voucher_id], references: [id])
+  payment_method_id  String
+  Payment_method     PaymentMethod   @relation(fields: [payment_method_id], references: [id])
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("transaction")
+}
+
+model PaymentMethod {
+  id   String @id @default(uuid())
+  name String @unique
+
+  Transaction Transaction[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("payment_methods")
+}
+
+model VoucherStatus {
+  id   String @id @default(uuid())
+  name String @unique
+
+  InStockVoucher InStockVoucher[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("voucher_status")
 }

@@ -1,0 +1,218 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Project "Yama" {
+  database_type: 'mysql'
+  Note: ''
+}
+
+Table users {
+  id String [pk]
+  username String [unique, not null]
+  email String [unique]
+  phone String [unique]
+  password String [not null]
+  Transaction transaction [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+}
+
+Table categories {
+  id String [pk]
+  category_name String [unique, not null]
+  Product products [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+}
+
+Table products {
+  id String [pk]
+  product_code String [not null]
+  product_name String [not null]
+  category_id String [not null]
+  Category categories [not null]
+  unit_id String [not null]
+  Unit units [not null]
+  InStockVoucher instock_voucher [not null]
+  Instock instock [not null]
+  ProductPriceList product_price_list [not null]
+  Composite composite [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+}
+
+Table prices {
+  id String [pk]
+  name String [not null]
+  ProductPriceList product_price_list [not null]
+  CompositePriceList composite_price_list [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+}
+
+Table product_price_list {
+  id String [pk]
+  amount Float [not null]
+  product_id String [not null]
+  Product products [not null]
+  price_id String [not null]
+  Price prices [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+}
+
+Table composite {
+  id String [pk]
+  name String [not null]
+  per_unit Float [not null]
+  product_id String [not null]
+  Product products [not null]
+  unit_id String [not null]
+  Unit units [not null]
+  CompositePriceList composite_price_list [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+}
+
+Table composite_price_list {
+  id String [pk]
+  amount Float [not null]
+  composite_id String [not null]
+  Composite composite [not null]
+  price_id String [not null]
+  Price prices [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+}
+
+Table units {
+  id String [pk]
+  unit_name String [unique, not null]
+  Product products [not null]
+  Composite composite [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+}
+
+Table suppliers {
+  id String [pk]
+  supplier_name String [not null]
+  short_name String
+  address String
+  phone String
+  InStockVoucher instock_voucher [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+}
+
+Table customers {
+  id String [pk]
+  customer_name String [not null]
+  short_name String
+  address String
+  phone String
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+}
+
+Table warehouses {
+  id String [pk]
+  warehouse_name String [not null]
+  Instock instock [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+}
+
+Table instock_voucher {
+  id String [pk]
+  discount Float
+  total Float [not null]
+  round_adjustment Float
+  voucher_status_id String
+  Voucher_Status voucher_status
+  product_id String [not null]
+  Product products [not null]
+  supplier_id String [not null]
+  Supplier suppliers [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  Transaction transaction [not null]
+}
+
+Table instock {
+  id String [pk]
+  total_quantity Int [not null]
+  foc Int [default: 0]
+  discount_on_item Int [default: 0]
+  total_amount Float [not null]
+  product_id String [not null]
+  Product products [not null]
+  warehouse_id String [not null]
+  Warehouse warehouses [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+}
+
+Table transaction {
+  id String [pk]
+  paid Float [not null]
+  balance Float [not null]
+  remark String
+  issued_by_id String
+  Issued_By users
+  instock_voucher_id String
+  InStockVoucher instock_voucher
+  payment_method_id String [not null]
+  Payment_method payment_methods [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+}
+
+Table payment_methods {
+  id String [pk]
+  name String [unique, not null]
+  Transaction transaction [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+}
+
+Table voucher_status {
+  id String [pk]
+  name String [unique, not null]
+  InStockVoucher instock_voucher [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+}
+
+Ref: products.category_id > categories.id
+
+Ref: products.unit_id > units.id
+
+Ref: product_price_list.product_id > products.id
+
+Ref: product_price_list.price_id > prices.id
+
+Ref: composite.product_id > products.id
+
+Ref: composite.unit_id > units.id
+
+Ref: composite_price_list.composite_id > composite.id
+
+Ref: composite_price_list.price_id > prices.id
+
+Ref: instock_voucher.voucher_status_id > voucher_status.id
+
+Ref: instock_voucher.product_id > products.id
+
+Ref: instock_voucher.supplier_id > suppliers.id
+
+Ref: instock.product_id > products.id
+
+Ref: instock.warehouse_id > warehouses.id
+
+Ref: transaction.issued_by_id > users.id
+
+Ref: transaction.instock_voucher_id > instock_voucher.id
+
+Ref: transaction.payment_method_id > payment_methods.id

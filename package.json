@@ -1,7 +1,7 @@
 {
-  "name": "getbak-coupons-backend",
+  "name": "yama-backend",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "src/server.ts",
   "license": "MIT",
   "scripts": {
     "dev": " nodemon src/server.ts",
