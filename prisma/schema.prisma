@@ -54,10 +54,11 @@ model Product {
   unit_id     String
   Unit        Unit     @relation(fields: [unit_id], references: [id])
 
-  InStockVoucher   InStockVoucher[]
   Instock          Instock[]
   ProductPriceList ProductPriceList[]
   Composite        Composite[]
+  inStockOnProduct inStockOnProduct[]
+  SaleItem         SaleItem[]
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -163,8 +164,9 @@ model Customer {
   address       String?
   phone         String?
 
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+  SaleVoucher SaleVoucher[]
 
   @@map("customers")
 }
@@ -173,7 +175,8 @@ model Warehouse {
   id             String @id @default(uuid())
   warehouse_name String
 
-  Instock Instock[]
+  InStockVoucher   InStockVoucher[]
+  inStockOnProduct inStockOnProduct[]
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -184,37 +187,42 @@ model Warehouse {
 // stock data schemas
 
 model InStockVoucher {
-  id                String         @id @default(uuid())
-  discount          Float?
-  total             Float
-  round_adjustment  Float?
-  voucher_status_id String?
-  Voucher_Status    VoucherStatus? @relation(fields: [voucher_status_id], references: [id])
+  id               String @id @default(uuid())
+  discount         Float?
+  total            Float?
+  grand_total      Float?
+  round_adjustment Float?
 
-  product_id  String
-  Product     Product  @relation(fields: [product_id], references: [id])
-  supplier_id String
-  Supplier    Supplier @relation(fields: [supplier_id], references: [id])
+  supplier_id    String
+  Supplier       Supplier        @relation(fields: [supplier_id], references: [id])
+  voucher_status Voucher_Status?
+  warehouse_id   String
+  Warehouse      Warehouse       @relation(fields: [warehouse_id], references: [id])
 
   created_at  DateTime      @default(now())
   updated_at  DateTime      @updatedAt
   Transaction Transaction[]
+  Instock     Instock[]
 
   @@map("instock_voucher")
+}
+
+enum Voucher_Status {
+  done
+  remainder
 }
 
 model Instock {
   id String @id @default(uuid())
 
-  total_quantity   Int
-  foc              Int?  @default(0)
-  discount_on_item Int?  @default(0)
-  total_amount     Float
-
-  product_id   String
-  Product      Product   @relation(fields: [product_id], references: [id])
-  warehouse_id String
-  Warehouse    Warehouse @relation(fields: [warehouse_id], references: [id])
+  total_quantity     Int
+  foc                Int?           @default(0)
+  discount_on_item   Int?           @default(0)
+  total_amount       Float
+  instock_voucher_id String
+  InstockVoucher     InStockVoucher @relation(fields: [instock_voucher_id], references: [id])
+  product_id         String
+  Product            Product        @relation(fields: [product_id], references: [id])
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -222,11 +230,57 @@ model Instock {
   @@map("instock")
 }
 
+model inStockOnProduct {
+  id String @id @default(uuid())
+
+  warehouse_id String
+  Warehouse    Warehouse @relation(fields: [warehouse_id], references: [id])
+
+  quantity   Int
+  product_id String
+  Product    Product @relation(fields: [product_id], references: [id])
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("instock_on_product")
+}
+
+model SaleVoucher {
+  id               String @id @default(uuid())
+  discount         Float?
+  grand_total      Float?
+  total            Float?
+  round_adjustment Float?
+
+  customer_id    String
+  Customer       Customer        @relation(fields: [customer_id], references: [id])
+  voucher_status Voucher_Status?
+
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+  Transaction Transaction[]
+  SaleItem    SaleItem[]
+
+  @@map("sale_voucher")
+}
+
+model SaleItem {
+  id              String      @id @default(uuid())
+  total_quantity  Int
+  total_amount    Float
+  sale_voucher_id String
+  SaleVoucher     SaleVoucher @relation(fields: [sale_voucher_id], references: [id])
+  product_id      String
+  Product         Product     @relation(fields: [product_id], references: [id])
+}
+
 model Transaction {
   id      String  @id @default(uuid())
   paid    Float
   balance Float
   remark  String?
+  total   Float
 
   issued_by_id       String?
   Issued_By          User?           @relation(fields: [issued_by_id], references: [id])
@@ -235,8 +289,10 @@ model Transaction {
   payment_method_id  String
   Payment_method     PaymentMethod   @relation(fields: [payment_method_id], references: [id])
 
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  created_at      DateTime     @default(now())
+  updated_at      DateTime     @updatedAt
+  SaleVoucher     SaleVoucher? @relation(fields: [sale_voucher_id], references: [id])
+  sale_voucher_id String?
 
   @@map("transaction")
 }
@@ -251,16 +307,4 @@ model PaymentMethod {
   updated_at DateTime @updatedAt
 
   @@map("payment_methods")
-}
-
-model VoucherStatus {
-  id   String @id @default(uuid())
-  name String @unique
-
-  InStockVoucher InStockVoucher[]
-
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  @@map("voucher_status")
 }

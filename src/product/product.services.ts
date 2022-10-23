@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 const { product } = new PrismaClient();
 
 export class Product {
-     async createProdcut({ product_code,product_name,category_id,unit_id, callback }) {
+     async createProdcut({ product_code,product_name,category_id,unit_id,amount,price_id ,callback }) {
           await product.create({
             data:{
                 product_code:product_code,
@@ -16,7 +16,13 @@ export class Product {
                   connect:{
                         id:unit_id
                     }
-                }
+                },
+                // ProductPriceList:{
+                //   create:{
+                //     price_id:price_id,
+                //     amount:amount
+                //   }
+                // }
                 }
             })
           .then((data)=>{
@@ -32,9 +38,9 @@ export class Product {
         include:{
           Unit:true,
           Category:true,
-          instockOnProduct:{
+          ProductPriceList:{
             include:{
-              Warehouse:true
+              Price:true,
             }
           }
         }

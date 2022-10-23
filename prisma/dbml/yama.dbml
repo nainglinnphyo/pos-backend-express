@@ -34,10 +34,11 @@ Table products {
   Category categories [not null]
   unit_id String [not null]
   Unit units [not null]
-  InStockVoucher instock_voucher [not null]
   Instock instock [not null]
   ProductPriceList product_price_list [not null]
   Composite composite [not null]
+  inStockOnProduct instock_on_product [not null]
+  SaleItem SaleItem [not null]
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
 }
@@ -114,12 +115,14 @@ Table customers {
   phone String
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
+  SaleVoucher sale_voucher [not null]
 }
 
 Table warehouses {
   id String [pk]
   warehouse_name String [not null]
-  Instock instock [not null]
+  InStockVoucher instock_voucher [not null]
+  inStockOnProduct instock_on_product [not null]
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
 }
@@ -127,17 +130,18 @@ Table warehouses {
 Table instock_voucher {
   id String [pk]
   discount Float
-  total Float [not null]
+  total Float
+  grand_total Float
   round_adjustment Float
-  voucher_status_id String
-  Voucher_Status voucher_status
-  product_id String [not null]
-  Product products [not null]
   supplier_id String [not null]
   Supplier suppliers [not null]
+  voucher_status Voucher_Status
+  warehouse_id String [not null]
+  Warehouse warehouses [not null]
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
   Transaction transaction [not null]
+  Instock instock [not null]
 }
 
 Table instock {
@@ -146,12 +150,48 @@ Table instock {
   foc Int [default: 0]
   discount_on_item Int [default: 0]
   total_amount Float [not null]
+  instock_voucher_id String [not null]
+  InstockVoucher instock_voucher [not null]
   product_id String [not null]
   Product products [not null]
-  warehouse_id String [not null]
-  Warehouse warehouses [not null]
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
+}
+
+Table instock_on_product {
+  id String [pk]
+  warehouse_id String [not null]
+  Warehouse warehouses [not null]
+  quantity Int [not null]
+  product_id String [not null]
+  Product products [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+}
+
+Table sale_voucher {
+  id String [pk]
+  discount Float
+  grand_total Float
+  total Float
+  round_adjustment Float
+  customer_id String [not null]
+  Customer customers [not null]
+  voucher_status Voucher_Status
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  Transaction transaction [not null]
+  SaleItem SaleItem [not null]
+}
+
+Table SaleItem {
+  id String [pk]
+  total_quantity Int [not null]
+  total_amount Float [not null]
+  sale_voucher_id String [not null]
+  SaleVoucher sale_voucher [not null]
+  product_id String [not null]
+  Product products [not null]
 }
 
 Table transaction {
@@ -159,6 +199,7 @@ Table transaction {
   paid Float [not null]
   balance Float [not null]
   remark String
+  total Float [not null]
   issued_by_id String
   Issued_By users
   instock_voucher_id String
@@ -167,6 +208,8 @@ Table transaction {
   Payment_method payment_methods [not null]
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
+  SaleVoucher sale_voucher
+  sale_voucher_id String
 }
 
 Table payment_methods {
@@ -177,12 +220,9 @@ Table payment_methods {
   updated_at DateTime [not null]
 }
 
-Table voucher_status {
-  id String [pk]
-  name String [unique, not null]
-  InStockVoucher instock_voucher [not null]
-  created_at DateTime [default: `now()`, not null]
-  updated_at DateTime [not null]
+Enum Voucher_Status {
+  done
+  remainder
 }
 
 Ref: products.category_id > categories.id
@@ -201,18 +241,28 @@ Ref: composite_price_list.composite_id > composite.id
 
 Ref: composite_price_list.price_id > prices.id
 
-Ref: instock_voucher.voucher_status_id > voucher_status.id
-
-Ref: instock_voucher.product_id > products.id
-
 Ref: instock_voucher.supplier_id > suppliers.id
+
+Ref: instock_voucher.warehouse_id > warehouses.id
+
+Ref: instock.instock_voucher_id > instock_voucher.id
 
 Ref: instock.product_id > products.id
 
-Ref: instock.warehouse_id > warehouses.id
+Ref: instock_on_product.warehouse_id > warehouses.id
+
+Ref: instock_on_product.product_id > products.id
+
+Ref: sale_voucher.customer_id > customers.id
+
+Ref: SaleItem.sale_voucher_id > sale_voucher.id
+
+Ref: SaleItem.product_id > products.id
 
 Ref: transaction.issued_by_id > users.id
 
 Ref: transaction.instock_voucher_id > instock_voucher.id
 
 Ref: transaction.payment_method_id > payment_methods.id
+
+Ref: transaction.sale_voucher_id > sale_voucher.id
