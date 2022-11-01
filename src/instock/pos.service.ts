@@ -3,6 +3,7 @@ import { superLog } from '../utilities/superLog';
 const { inStockVoucher, instock, inStockOnProduct,transaction,productPriceList } = new PrismaClient();
 
 export class Pos {
+     
      async createInstock({ supplier_id,total,grand_total,discount, warehouse_id, instockData, paid,balance,transaction_remark,payment_method_id, callback }) {
           await inStockVoucher.create({
                data: {
