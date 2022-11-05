@@ -2,12 +2,6 @@ import { Request, Response } from 'express';
 import { Responser } from '../utilities';
 import {Pos} from './pos.service'
 
-interface IProduct{
-     instock: [];
-     warehouse_id:string;
-     supplier_id:string;
-     
-}
 const pos = new Pos();
 const createInstock = async (req: Request, res: Response) => {
         try {
@@ -23,4 +17,18 @@ const createInstock = async (req: Request, res: Response) => {
           
         }
 }
-export const posController = { createInstock};
+
+const fetchTransaction = async (req: Request, res: Response) =>{
+     try {
+          const data = await pos.fetchTransaction({callback:(err:any,data:any)=>{
+               if(err){
+                    return Responser({res,status:400,message:err.message,devMessage:err,body:''})
+               }else if(data){
+                    return Responser({res,status:200,message:'Transcation Fetch Success',devMessage:'',body:data})
+               }
+          }})
+     } catch (error) {
+          
+     }
+}
+export const posController = { createInstock,fetchTransaction };

@@ -1,8 +1,26 @@
 import { PrismaClient } from '@prisma/client';
-const { product } = new PrismaClient();
+const { product ,productPriceList} = new PrismaClient();
 
+interface IPriceListData{
+  product_id: string;
+  price_id: string;
+  amount: number;
+}
+interface IProductPriceList {
+  data:IPriceListData[],
+  callback:any
+}
 export class Product {
-     async createProdcut({ product_code,product_name,category_id,unit_id,amount,price_id ,callback }) {
+
+     async createProdcut({ product_code,product_name,category_id,unit_id ,callback }) {
+          const productExit = await product.findFirst({
+            where:{
+              product_code:product_code
+            }
+          })
+          if(productExit){
+            callback("Product Code Cann't be Duplicated",null)
+          }else{
           await product.create({
             data:{
                 product_code:product_code,
@@ -16,13 +34,7 @@ export class Product {
                   connect:{
                         id:unit_id
                     }
-                },
-                // ProductPriceList:{
-                //   create:{
-                //     price_id:price_id,
-                //     amount:amount
-                //   }
-                // }
+                }
                 }
             })
           .then((data)=>{
@@ -31,6 +43,7 @@ export class Product {
           .catch((e)=>{
             callback(e,null);
           })
+        }
      }
 
      async fetchProduct({callback}){
@@ -41,8 +54,9 @@ export class Product {
           ProductPriceList:{
             include:{
               Price:true,
-            }
-          }
+            },
+          },
+          inStockOnProduct:true,
         }
       })
       .then((data)=>{
@@ -53,4 +67,15 @@ export class Product {
       })
      }
 
+     async createProductPriceList({data,callback}:IProductPriceList){
+        try {
+            await productPriceList.createMany({
+              data:data,
+            })
+            .then((data)=>callback(null,data))
+            .catch((e)=>callback(e,null))
+        } catch (error) {
+          
+        }
+     }
 }

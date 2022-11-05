@@ -13,4 +13,15 @@ export class Category {
           })
      }
 
+     async fetchCategory({callback }) {
+      // console.log(category_name,category_name);
+          await category.findMany({orderBy:{category_name:"asc"}})
+          .then((data)=>{
+            callback(null,data)
+          })
+          .catch((e)=>{
+            callback(e,null);
+          })
+     }
+
 }
