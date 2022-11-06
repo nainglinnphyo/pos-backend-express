@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { superLog } from '../utilities/superLog';
-const { inStockVoucher, instock, inStockOnProduct, transaction, productPriceList } = new PrismaClient();
+const { inStockVoucher,paymentMethod,warehouse, instock, inStockOnProduct, transaction, productPriceList } = new PrismaClient();
 
 interface IInstockData {
      product_id: string;
@@ -110,5 +110,17 @@ export class Pos {
           } catch (error) {
 
           }
+     }
+
+     async fetchWareHouse({callback}){
+          await warehouse.findMany({orderBy:{created_at:"desc"}})
+          .then((data)=> callback(null,data))
+          .catch((err)=> callback(err,null))
+     }
+
+     async fetchPaymentMethod({callback}){
+          await paymentMethod.findMany({orderBy:{created_at:"desc"}})
+          .then((data)=> callback(null,data))
+          .catch((err)=> callback(err,null))
      }
 }

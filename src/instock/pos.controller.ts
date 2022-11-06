@@ -31,4 +31,32 @@ const fetchTransaction = async (req: Request, res: Response) =>{
           
      }
 }
-export const posController = { createInstock,fetchTransaction };
+
+const fetchWareHouse = async (req: Request, res: Response) =>{
+     try {
+          const data = await pos.fetchWareHouse({callback:(err:any,data:any)=>{
+               if(err){
+                    return Responser({res,status:400,message:err.message,devMessage:err,body:''})
+               }else if(data){
+                    return Responser({res,status:200,message:'Warehouse Fetch Success',devMessage:'',body:data})
+               }
+          }})
+     } catch (error) {
+          
+     }
+}
+
+const fetchPaymentMethod = async (req: Request, res: Response) =>{
+     try {
+          const data = await pos.fetchPaymentMethod({callback:(err:any,data:any)=>{
+               if(err){
+                    return Responser({res,status:400,message:err.message,devMessage:err,body:''})
+               }else if(data){
+                    return Responser({res,status:200,message:'Payment Method Fetch Success',devMessage:'',body:data})
+               }
+          }})
+     } catch (error) {
+          
+     }
+}
+export const posController = { createInstock,fetchTransaction,fetchPaymentMethod,fetchWareHouse };
