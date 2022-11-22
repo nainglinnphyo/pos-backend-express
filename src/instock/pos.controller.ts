@@ -6,7 +6,12 @@ const pos = new Pos();
 const createInstock = async (req: Request, res: Response) => {
         try {
           const {supplier_id,total,discount,balance,grand_total,instockData,transaction_remark,warehouse_id,paid,payment_method_id} = req.body
-          const data = await pos.createInstock({supplier_id,grand_total,total,discount,instockData,warehouse_id,paid,balance,transaction_remark,payment_method_id,callback:(err:any,data:any)=>{
+          const parseIntTotal = parseInt(total)
+          const parseIntDiscount = parseInt(discount)
+          const parseIntBalance = parseInt(balance)
+          const parseIntGrandTotal = parseInt(grand_total)
+          const parseIntPaid = parseInt(paid)
+          const data = await pos.createInstock({supplier_id,parseIntGrandTotal,parseIntTotal,parseIntDiscount,instockData,warehouse_id,parseIntPaid,parseIntBalance,transaction_remark,payment_method_id,callback:(err:any,data:any)=>{
                if(err){
                     return Responser({res,status:400,message:err.message,devMessage:err,body:''})
                }else if(data){

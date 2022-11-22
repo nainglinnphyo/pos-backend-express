@@ -10,6 +10,14 @@ interface IProductPriceList {
   data:IPriceListData[],
   callback:any
 }
+interface IProductEdit {
+  id:string;
+  product_code:string;
+  product_name: string;
+  category_id:string;
+  unit_id:string;
+  callback:any;
+}
 export class Product {
 
      async createProdcut({ product_code,product_name,category_id,unit_id ,callback }) {
@@ -77,5 +85,25 @@ export class Product {
         } catch (error) {
           
         }
+     }
+
+     async productEdit({id,product_code,product_name,category_id,unit_id,callback}:IProductEdit){
+      try {
+          await product.update({
+            where:{
+              id:id
+            },
+            data:{
+              product_code:product_code,
+              product_name:product_name,
+              category_id:category_id,
+              unit_id:unit_id
+            }
+          })
+          .then((data)=>callback(null,data))
+          .catch((e)=>callback(e,null))
+      } catch (error) {
+        
+      }
      }
 }

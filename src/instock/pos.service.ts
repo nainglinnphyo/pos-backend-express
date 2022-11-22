@@ -12,28 +12,28 @@ interface IInstockData {
 }
 interface ICreateInstock {
      supplier_id: string;
-     total: number;
-     grand_total: number;
-     discount: number;
+     parseIntTotal: number;
+     parseIntGrandTotal: number;
+     parseIntDiscount: number;
      warehouse_id: string;
      instockData: IInstockData[];
-     paid: number;
-     balance: number;
+     parseIntPaid: number;
+     parseIntBalance: number;
      transaction_remark: string;
      payment_method_id: string;
      callback: any;
 }
 export class Pos {
 
-     async createInstock({ supplier_id, total, grand_total, discount, warehouse_id, instockData, paid, balance, transaction_remark, payment_method_id, callback }: ICreateInstock) {
+     async createInstock({ supplier_id, parseIntTotal, parseIntGrandTotal, parseIntDiscount, warehouse_id, instockData, parseIntPaid, parseIntBalance, transaction_remark, payment_method_id, callback }: ICreateInstock) {
           await inStockVoucher.create({
                data: {
                     supplier_id: supplier_id,
                     warehouse_id: warehouse_id,
-                    total: total,
-                    grand_total: grand_total,
-                    discount: discount,
-                    voucher_status: balance === 0 ? 'done' : 'remainder'
+                    total: parseIntTotal,
+                    grand_total: parseIntGrandTotal,
+                    discount: parseIntDiscount,
+                    voucher_status: parseIntBalance === 0 ? 'done' : 'remainder'
                },
           })
                .then(async (inStockVoucherData) => {
@@ -82,10 +82,10 @@ export class Pos {
                     }
                     await transaction.create({
                          data: {
-                              paid: paid,
-                              balance: balance,
+                              paid: parseIntPaid,
+                              balance: parseIntBalance,
                               remark: transaction_remark,
-                              total: total,
+                              total: parseIntTotal,
                               payment_method_id: payment_method_id,
                               instock_voucher_id: inStockVoucherData.id
                          }

@@ -95,9 +95,9 @@ const fetchProduct = async (req: Request, res: Response) => {
 const createProductPriceList = async (req: Request, res: Response) => {
      try {
           const product = new Product();
-          const {data} = req.body
+          const { data } = req.body
           const resData = await product.createProductPriceList({
-               data,callback: (err: any, data: any) => {
+               data, callback: (err: any, data: any) => {
                     if (err) {
                          return Responser({
                               res: res,
@@ -129,4 +129,49 @@ const createProductPriceList = async (req: Request, res: Response) => {
 
      }
 }
-export const productController = { createProduct, fetchProduct,createProductPriceList };
+
+const editProduct = async (req: Request, res: Response) => {
+     try {
+          const product = new Product();
+
+          const { id, product_name, product_code, category_id, unit_id } = req.body;
+          const data = await product.productEdit({
+               id,
+               product_name,
+               product_code,
+               unit_id,
+               category_id,
+               callback: (err: any, data: any) => {
+                    if (err) {
+                         return Responser({
+                              res: res,
+                              status: 400,
+                              body: null,
+                              message: "Somethin went wrong with product edit",
+                              devMessage: err.message,
+                         });
+                    } else if (data) {
+                         return Responser({
+                              res: res,
+                              status: 201,
+                              body: data,
+                              message: "Product Eidt Success!",
+                              devMessage: "",
+                         });
+                    } else {
+                         return Responser({
+                              res: res,
+                              status: 500,
+                              body: null,
+                              message: err,
+                              devMessage: err.message,
+                         });
+                    }
+               }
+
+          })
+     } catch (error) {
+
+     }
+}
+export const productController = {editProduct, createProduct, fetchProduct, createProductPriceList };
