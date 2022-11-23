@@ -140,6 +140,7 @@ export class Pos {
                               Warehouse:true
                          }
                     },
+                    Payment_method:true,
                }
           })
           .then((data)=> callback(null,data))
