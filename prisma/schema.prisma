@@ -50,9 +50,9 @@ model Product {
   product_name String
 
   category_id String
-  Category    Category @relation(fields: [category_id], references: [id])
+  Category    Category @relation(fields: [category_id], references: [id],onDelete: Cascade)
   unit_id     String
-  Unit        Unit     @relation(fields: [unit_id], references: [id])
+  Unit        Unit     @relation(fields: [unit_id], references: [id],onDelete: Cascade)
 
   Instock          Instock[]
   ProductPriceList ProductPriceList[]
@@ -84,9 +84,9 @@ model ProductPriceList {
   amount Float
 
   product_id String
-  Product    Product @relation(fields: [product_id], references: [id])
+  Product    Product @relation(fields: [product_id], references: [id],onDelete: Cascade)
   price_id   String
-  Price      Price   @relation(fields: [price_id], references: [id])
+  Price      Price   @relation(fields: [price_id], references: [id],onDelete: Cascade)
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -100,9 +100,9 @@ model Composite {
   per_unit Float
 
   product_id String
-  Product    Product @relation(fields: [product_id], references: [id])
+  Product    Product @relation(fields: [product_id], references: [id],onDelete: Cascade)
   unit_id    String
-  Unit       Unit    @relation(fields: [unit_id], references: [id])
+  Unit       Unit    @relation(fields: [unit_id], references: [id],onDelete: Cascade)
 
   CompositePriceList CompositePriceList[]
 
@@ -117,9 +117,9 @@ model CompositePriceList {
   amount Float
 
   composite_id String
-  Composite    Composite @relation(fields: [composite_id], references: [id])
+  Composite    Composite @relation(fields: [composite_id], references: [id],onDelete: Cascade)
   price_id     String
-  Price        Price     @relation(fields: [price_id], references: [id])
+  Price        Price     @relation(fields: [price_id], references: [id],onDelete: Cascade)
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -188,16 +188,17 @@ model Warehouse {
 
 model InStockVoucher {
   id               String @id @default(uuid())
+  voucher_no Int @default(autoincrement()) @unique
   discount         Float?
   total            Float?
   grand_total      Float?
   round_adjustment Float?
 
   supplier_id    String
-  Supplier       Supplier        @relation(fields: [supplier_id], references: [id])
+  Supplier       Supplier        @relation(fields: [supplier_id], references: [id],onDelete: Cascade)
   voucher_status Voucher_Status?
   warehouse_id   String
-  Warehouse      Warehouse       @relation(fields: [warehouse_id], references: [id])
+  Warehouse      Warehouse       @relation(fields: [warehouse_id], references: [id],onDelete: Cascade)
 
   created_at  DateTime      @default(now())
   updated_at  DateTime      @updatedAt
@@ -214,15 +215,14 @@ enum Voucher_Status {
 
 model Instock {
   id String @id @default(uuid())
-
   total_quantity     Int
   foc                Int?           @default(0)
   discount_on_item   Int?           @default(0)
   total_amount       Float
   instock_voucher_id String
-  InstockVoucher     InStockVoucher @relation(fields: [instock_voucher_id], references: [id])
+  InstockVoucher     InStockVoucher @relation(fields: [instock_voucher_id], references: [id],onDelete: Cascade)
   product_id         String
-  Product            Product        @relation(fields: [product_id], references: [id])
+  Product            Product        @relation(fields: [product_id], references: [id],onDelete: Cascade)
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -234,11 +234,11 @@ model inStockOnProduct {
   id String @id @default(uuid())
 
   warehouse_id String
-  Warehouse    Warehouse @relation(fields: [warehouse_id], references: [id])
+  Warehouse    Warehouse @relation(fields: [warehouse_id], references: [id],onDelete: Cascade)
 
   quantity   Int
   product_id String
-  Product    Product @relation(fields: [product_id], references: [id])
+  Product    Product @relation(fields: [product_id], references: [id],onDelete: Cascade)
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -254,7 +254,7 @@ model SaleVoucher {
   round_adjustment Float?
 
   customer_id    String
-  Customer       Customer        @relation(fields: [customer_id], references: [id])
+  Customer       Customer        @relation(fields: [customer_id], references: [id],onDelete: Cascade)
   voucher_status Voucher_Status?
 
   created_at  DateTime      @default(now())
@@ -270,9 +270,9 @@ model SaleItem {
   total_quantity  Int
   total_amount    Float
   sale_voucher_id String
-  SaleVoucher     SaleVoucher @relation(fields: [sale_voucher_id], references: [id])
+  SaleVoucher     SaleVoucher @relation(fields: [sale_voucher_id], references: [id],onDelete: Cascade)
   product_id      String
-  Product         Product     @relation(fields: [product_id], references: [id])
+  Product         Product     @relation(fields: [product_id], references: [id],onDelete: Cascade)
 }
 
 model Transaction {
@@ -283,15 +283,15 @@ model Transaction {
   total   Float
 
   issued_by_id       String?
-  Issued_By          User?           @relation(fields: [issued_by_id], references: [id])
+  Issued_By          User?           @relation(fields: [issued_by_id], references: [id],onDelete: Cascade)
   instock_voucher_id String?
-  InStockVoucher     InStockVoucher? @relation(fields: [instock_voucher_id], references: [id])
+  InStockVoucher     InStockVoucher? @relation(fields: [instock_voucher_id], references: [id],onDelete: Cascade)
   payment_method_id  String
-  Payment_method     PaymentMethod   @relation(fields: [payment_method_id], references: [id])
+  Payment_method     PaymentMethod   @relation(fields: [payment_method_id], references: [id],onDelete: Cascade)
 
   created_at      DateTime     @default(now())
   updated_at      DateTime     @updatedAt
-  SaleVoucher     SaleVoucher? @relation(fields: [sale_voucher_id], references: [id])
+  SaleVoucher     SaleVoucher? @relation(fields: [sale_voucher_id], references: [id],onDelete: Cascade)
   sale_voucher_id String?
 
   @@map("transaction")

@@ -135,6 +135,7 @@ CREATE TABLE `warehouses` (
 -- CreateTable
 CREATE TABLE `instock_voucher` (
     `id` VARCHAR(191) NOT NULL,
+    `voucher_no` INTEGER NOT NULL AUTO_INCREMENT,
     `discount` DOUBLE NULL,
     `total` DOUBLE NULL,
     `grand_total` DOUBLE NULL,
@@ -145,6 +146,7 @@ CREATE TABLE `instock_voucher` (
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
+    UNIQUE INDEX `instock_voucher_voucher_no_key`(`voucher_no`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -230,64 +232,64 @@ CREATE TABLE `payment_methods` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `products` ADD CONSTRAINT `products_category_id_fkey` FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `products` ADD CONSTRAINT `products_category_id_fkey` FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `products` ADD CONSTRAINT `products_unit_id_fkey` FOREIGN KEY (`unit_id`) REFERENCES `units`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `products` ADD CONSTRAINT `products_unit_id_fkey` FOREIGN KEY (`unit_id`) REFERENCES `units`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `product_price_list` ADD CONSTRAINT `product_price_list_product_id_fkey` FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `product_price_list` ADD CONSTRAINT `product_price_list_product_id_fkey` FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `product_price_list` ADD CONSTRAINT `product_price_list_price_id_fkey` FOREIGN KEY (`price_id`) REFERENCES `prices`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `product_price_list` ADD CONSTRAINT `product_price_list_price_id_fkey` FOREIGN KEY (`price_id`) REFERENCES `prices`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `composite` ADD CONSTRAINT `composite_product_id_fkey` FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `composite` ADD CONSTRAINT `composite_product_id_fkey` FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `composite` ADD CONSTRAINT `composite_unit_id_fkey` FOREIGN KEY (`unit_id`) REFERENCES `units`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `composite` ADD CONSTRAINT `composite_unit_id_fkey` FOREIGN KEY (`unit_id`) REFERENCES `units`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `composite_price_list` ADD CONSTRAINT `composite_price_list_composite_id_fkey` FOREIGN KEY (`composite_id`) REFERENCES `composite`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `composite_price_list` ADD CONSTRAINT `composite_price_list_composite_id_fkey` FOREIGN KEY (`composite_id`) REFERENCES `composite`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `composite_price_list` ADD CONSTRAINT `composite_price_list_price_id_fkey` FOREIGN KEY (`price_id`) REFERENCES `prices`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `composite_price_list` ADD CONSTRAINT `composite_price_list_price_id_fkey` FOREIGN KEY (`price_id`) REFERENCES `prices`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `instock_voucher` ADD CONSTRAINT `instock_voucher_supplier_id_fkey` FOREIGN KEY (`supplier_id`) REFERENCES `suppliers`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `instock_voucher` ADD CONSTRAINT `instock_voucher_supplier_id_fkey` FOREIGN KEY (`supplier_id`) REFERENCES `suppliers`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `instock_voucher` ADD CONSTRAINT `instock_voucher_warehouse_id_fkey` FOREIGN KEY (`warehouse_id`) REFERENCES `warehouses`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `instock_voucher` ADD CONSTRAINT `instock_voucher_warehouse_id_fkey` FOREIGN KEY (`warehouse_id`) REFERENCES `warehouses`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `instock` ADD CONSTRAINT `instock_instock_voucher_id_fkey` FOREIGN KEY (`instock_voucher_id`) REFERENCES `instock_voucher`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `instock` ADD CONSTRAINT `instock_instock_voucher_id_fkey` FOREIGN KEY (`instock_voucher_id`) REFERENCES `instock_voucher`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `instock` ADD CONSTRAINT `instock_product_id_fkey` FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `instock` ADD CONSTRAINT `instock_product_id_fkey` FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `instock_on_product` ADD CONSTRAINT `instock_on_product_warehouse_id_fkey` FOREIGN KEY (`warehouse_id`) REFERENCES `warehouses`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `instock_on_product` ADD CONSTRAINT `instock_on_product_warehouse_id_fkey` FOREIGN KEY (`warehouse_id`) REFERENCES `warehouses`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `instock_on_product` ADD CONSTRAINT `instock_on_product_product_id_fkey` FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `instock_on_product` ADD CONSTRAINT `instock_on_product_product_id_fkey` FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `sale_voucher` ADD CONSTRAINT `sale_voucher_customer_id_fkey` FOREIGN KEY (`customer_id`) REFERENCES `customers`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `sale_voucher` ADD CONSTRAINT `sale_voucher_customer_id_fkey` FOREIGN KEY (`customer_id`) REFERENCES `customers`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `SaleItem` ADD CONSTRAINT `SaleItem_sale_voucher_id_fkey` FOREIGN KEY (`sale_voucher_id`) REFERENCES `sale_voucher`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `SaleItem` ADD CONSTRAINT `SaleItem_sale_voucher_id_fkey` FOREIGN KEY (`sale_voucher_id`) REFERENCES `sale_voucher`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `SaleItem` ADD CONSTRAINT `SaleItem_product_id_fkey` FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `SaleItem` ADD CONSTRAINT `SaleItem_product_id_fkey` FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `transaction` ADD CONSTRAINT `transaction_issued_by_id_fkey` FOREIGN KEY (`issued_by_id`) REFERENCES `users`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `transaction` ADD CONSTRAINT `transaction_issued_by_id_fkey` FOREIGN KEY (`issued_by_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `transaction` ADD CONSTRAINT `transaction_instock_voucher_id_fkey` FOREIGN KEY (`instock_voucher_id`) REFERENCES `instock_voucher`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `transaction` ADD CONSTRAINT `transaction_instock_voucher_id_fkey` FOREIGN KEY (`instock_voucher_id`) REFERENCES `instock_voucher`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `transaction` ADD CONSTRAINT `transaction_payment_method_id_fkey` FOREIGN KEY (`payment_method_id`) REFERENCES `payment_methods`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `transaction` ADD CONSTRAINT `transaction_payment_method_id_fkey` FOREIGN KEY (`payment_method_id`) REFERENCES `payment_methods`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `transaction` ADD CONSTRAINT `transaction_sale_voucher_id_fkey` FOREIGN KEY (`sale_voucher_id`) REFERENCES `sale_voucher`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `transaction` ADD CONSTRAINT `transaction_sale_voucher_id_fkey` FOREIGN KEY (`sale_voucher_id`) REFERENCES `sale_voucher`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

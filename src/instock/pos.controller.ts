@@ -15,7 +15,7 @@ const createInstock = async (req: Request, res: Response) => {
                if(err){
                     return Responser({res,status:400,message:err.message,devMessage:err,body:''})
                }else if(data){
-                    return Responser({res,status:201,message:'',devMessage:'',body:data})
+                    return Responser({res,status:201,message:'Instock Success',devMessage:'',body:data})
                }
           }})
         } catch (error) {
@@ -64,4 +64,19 @@ const fetchPaymentMethod = async (req: Request, res: Response) =>{
           
      }
 }
-export const posController = { createInstock,fetchTransaction,fetchPaymentMethod,fetchWareHouse };
+
+const fetchInStockTransactionDetails = async (req: Request, res: Response) =>{
+     try {
+          const {transaction_id} = req.query
+          const data = await pos.fetchInStockTransactionDetails({transaction_id,callback:(err:any,data:any)=>{
+               if(err){
+                    return Responser({res,status:400,message:err.message,devMessage:err,body:''})
+               }else if(data){
+                    return Responser({res,status:200,message:'Instock Details Fetch Success',devMessage:'',body:data})
+               }
+          }})
+     } catch (error) {
+          
+     }
+}
+export const posController = {fetchInStockTransactionDetails, createInstock,fetchTransaction,fetchPaymentMethod,fetchWareHouse };

@@ -38,11 +38,11 @@ export class Pos {
           })
                .then(async (inStockVoucherData) => {
                     for (let index = 0; index < instockData.length; index++) {
-                         const element = instockData[index];
+                         const element:IInstockData = instockData[index];
                          await instock.create({
                               data: {
-                                   total_amount: element.total_amount,
-                                   total_quantity: element.total_quantity,
+                                   total_amount: parseInt(element.total_amount.toString()),
+                                   total_quantity: parseInt(element.total_quantity.toString()),
                                    foc: element.foc,
                                    discount_on_item: element.discount_on_item,
                                    product_id: element.product_id,
@@ -62,7 +62,7 @@ export class Pos {
                                         },
                                         data: {
                                              quantity: {
-                                                  increment: element.total_quantity
+                                                  increment: parseInt(element.total_quantity.toString())
                                              }
                                         }
                                    })
@@ -70,13 +70,14 @@ export class Pos {
                                    await inStockOnProduct.create({
                                         data: {
                                              product_id: element.product_id,
-                                             quantity: element.total_quantity,
+                                             quantity: parseInt(element.total_quantity.toString()),
                                              warehouse_id: warehouse_id,
                                         }
                                    })
                               }
                          })
                               .catch((err) => {
+                                   console.log(err)
                                    callback(err, null)
                               })
                     }
@@ -120,6 +121,27 @@ export class Pos {
 
      async fetchPaymentMethod({callback}){
           await paymentMethod.findMany({orderBy:{created_at:"desc"}})
+          .then((data)=> callback(null,data))
+          .catch((err)=> callback(err,null))
+     }
+
+     async fetchInStockTransactionDetails({transaction_id,callback}){
+          await transaction.findUnique({
+               where:{
+                    id: transaction_id
+               },
+               include:{
+                    InStockVoucher:{
+                         include:{
+                              Instock:{
+                                   include:{Product:true}
+                              },
+                              Supplier:true,
+                              Warehouse:true
+                         }
+                    },
+               }
+          })
           .then((data)=> callback(null,data))
           .catch((err)=> callback(err,null))
      }

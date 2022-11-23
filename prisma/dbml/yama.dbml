@@ -129,6 +129,7 @@ Table warehouses {
 
 Table instock_voucher {
   id String [pk]
+  voucher_no Int [increment, unique, not null]
   discount Float
   total Float
   grand_total Float
@@ -225,44 +226,44 @@ Enum Voucher_Status {
   remainder
 }
 
-Ref: products.category_id > categories.id
+Ref: products.category_id > categories.id [delete: Cascade]
 
-Ref: products.unit_id > units.id
+Ref: products.unit_id > units.id [delete: Cascade]
 
-Ref: product_price_list.product_id > products.id
+Ref: product_price_list.product_id > products.id [delete: Cascade]
 
-Ref: product_price_list.price_id > prices.id
+Ref: product_price_list.price_id > prices.id [delete: Cascade]
 
-Ref: composite.product_id > products.id
+Ref: composite.product_id > products.id [delete: Cascade]
 
-Ref: composite.unit_id > units.id
+Ref: composite.unit_id > units.id [delete: Cascade]
 
-Ref: composite_price_list.composite_id > composite.id
+Ref: composite_price_list.composite_id > composite.id [delete: Cascade]
 
-Ref: composite_price_list.price_id > prices.id
+Ref: composite_price_list.price_id > prices.id [delete: Cascade]
 
-Ref: instock_voucher.supplier_id > suppliers.id
+Ref: instock_voucher.supplier_id > suppliers.id [delete: Cascade]
 
-Ref: instock_voucher.warehouse_id > warehouses.id
+Ref: instock_voucher.warehouse_id > warehouses.id [delete: Cascade]
 
-Ref: instock.instock_voucher_id > instock_voucher.id
+Ref: instock.instock_voucher_id > instock_voucher.id [delete: Cascade]
 
-Ref: instock.product_id > products.id
+Ref: instock.product_id > products.id [delete: Cascade]
 
-Ref: instock_on_product.warehouse_id > warehouses.id
+Ref: instock_on_product.warehouse_id > warehouses.id [delete: Cascade]
 
-Ref: instock_on_product.product_id > products.id
+Ref: instock_on_product.product_id > products.id [delete: Cascade]
 
-Ref: sale_voucher.customer_id > customers.id
+Ref: sale_voucher.customer_id > customers.id [delete: Cascade]
 
-Ref: SaleItem.sale_voucher_id > sale_voucher.id
+Ref: SaleItem.sale_voucher_id > sale_voucher.id [delete: Cascade]
 
-Ref: SaleItem.product_id > products.id
+Ref: SaleItem.product_id > products.id [delete: Cascade]
 
-Ref: transaction.issued_by_id > users.id
+Ref: transaction.issued_by_id > users.id [delete: Cascade]
 
-Ref: transaction.instock_voucher_id > instock_voucher.id
+Ref: transaction.instock_voucher_id > instock_voucher.id [delete: Cascade]
 
-Ref: transaction.payment_method_id > payment_methods.id
+Ref: transaction.payment_method_id > payment_methods.id [delete: Cascade]
 
-Ref: transaction.sale_voucher_id > sale_voucher.id
+Ref: transaction.sale_voucher_id > sale_voucher.id [delete: Cascade]
