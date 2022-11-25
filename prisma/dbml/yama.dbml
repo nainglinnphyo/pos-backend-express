@@ -3,7 +3,7 @@
 //// ------------------------------------------------------
 
 Project "Yama" {
-  database_type: 'mysql'
+  database_type: 'postgresql'
   Note: ''
 }
 

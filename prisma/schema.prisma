@@ -7,11 +7,11 @@ generator dbml {
   provider            = "prisma-dbml-generator"
   outputName          = "yama.dbml"
   projectName         = "Yama"
-  projectDatabaseType = "mysql"
+  projectDatabaseType = "postgresql"
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 

@@ -8,9 +8,6 @@ import fileUpload from 'express-fileupload';
 import swaggerUi from 'swagger-ui-express'
 import 'dotenv/config';
 import log from './config/logger'
-import fs from 'fs'
-import readXlsxFile from "read-excel-file/node";
-
 const prisma = new PrismaClient()
 
 
