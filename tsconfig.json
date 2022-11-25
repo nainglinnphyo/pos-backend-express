@@ -11,6 +11,13 @@
 	  "outDir": "./dist",
 	  "sourceMap": true,
 	  "resolveJsonModule": true,
-	}
+    
+      "lib": ["es2020", "dom"],
+	},
+	"exclude": [
+		"coverage",
+		"node_modules",
+		"dist",
+		"tests"
+	   ]
   }
-  
