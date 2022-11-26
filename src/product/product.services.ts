@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-const { product ,productPriceList} = new PrismaClient();
+const { product ,productPriceList,price} = new PrismaClient();
 
 interface IPriceListData{
   product_id: string;
@@ -109,9 +109,20 @@ export class Product {
 
      async fetchProductPriceList({product_id,callback}) {
         try {
-            await productPriceList.findMany({
+            await price.findMany({
               where:{
-                product_id:product_id
+                ProductPriceList:{
+                  some:{
+                    product_id:product_id
+                  }
+                }
+              },
+              include:{
+                ProductPriceList:{
+                  include:{
+                    Product:true,
+                  }
+                }
               }
             })
             .then((data)=>callback(null,data))
@@ -120,4 +131,22 @@ export class Product {
           
         }
      }
+
+  //    async fetchPriceList({product_id,callback}) {
+  //     try {
+  //         await price.findMany({
+  //           where:{
+  //             product_id:product_id
+  //           },
+  //           include:{
+  //             Price:true,
+  //             Product:true,
+  //           }
+  //         })
+  //         .then((data)=>callback(null,data))
+  //         .catch((err)=> callback(err,null))
+  //     } catch (error) {
+        
+  //     }
+  //  }
 }
