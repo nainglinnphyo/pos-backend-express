@@ -82,7 +82,7 @@ export class Product {
               data:{
                 product_id:product_id,
                 price_id:price_id,
-                amount:amount
+                amount:parseInt(amount.toString())
               },
             })
             .then((data)=>callback(null,data))
