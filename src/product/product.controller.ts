@@ -95,15 +95,15 @@ const fetchProduct = async (req: Request, res: Response) => {
 const createProductPriceList = async (req: Request, res: Response) => {
      try {
           const product = new Product();
-          const { data } = req.body
+          const { product_id,price_id,amount } = req.body
           const resData = await product.createProductPriceList({
-               data, callback: (err: any, data: any) => {
+               product_id,price_id,amount, callback: (err: any, data: any) => {
                     if (err) {
                          return Responser({
                               res: res,
                               status: 400,
                               body: null,
-                              message: "Somethin went wrong with product create",
+                              message: "Somethin went wrong with product price list create",
                               devMessage: err.message,
                          });
                     } else if (data) {

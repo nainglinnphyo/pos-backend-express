@@ -5,11 +5,12 @@ interface IPriceListData{
   product_id: string;
   price_id: string;
   amount: number;
+  callback:Function
 }
-interface IProductPriceList {
-  data:IPriceListData[],
-  callback:any
-}
+// interface IProductPriceList {
+//   data:IPriceListData[],
+//   callback:any
+// }
 interface IProductEdit {
   id:string;
   product_code:string;
@@ -75,10 +76,14 @@ export class Product {
       })
      }
 
-     async createProductPriceList({data,callback}:IProductPriceList){
+     async createProductPriceList({product_id,price_id,amount,callback}:IPriceListData){
         try {
-            await productPriceList.createMany({
-              data:data,
+            await productPriceList.create({
+              data:{
+                product_id:product_id,
+                price_id:price_id,
+                amount:amount
+              },
             })
             .then((data)=>callback(null,data))
             .catch((e)=>callback(e,null))
