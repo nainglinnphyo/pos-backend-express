@@ -109,20 +109,12 @@ export class Product {
 
      async fetchProductPriceList({product_id,callback}) {
         try {
-            await price.findMany({
+            await productPriceList.findMany({
               where:{
-                ProductPriceList:{
-                  some:{
-                    product_id:product_id
-                  }
-                }
+                product_id:product_id
               },
               include:{
-                ProductPriceList:{
-                  include:{
-                    Product:true,
-                  }
-                }
+                Price:true,
               }
             })
             .then((data)=>callback(null,data))
