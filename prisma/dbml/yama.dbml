@@ -38,7 +38,7 @@ Table products {
   ProductPriceList product_price_list [not null]
   Composite composite [not null]
   inStockOnProduct instock_on_product [not null]
-  SaleItem SaleItem [not null]
+  SaleItem sale_items [not null]
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
 }
@@ -182,10 +182,10 @@ Table sale_voucher {
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
   Transaction transaction [not null]
-  SaleItem SaleItem [not null]
+  SaleItem sale_items [not null]
 }
 
-Table SaleItem {
+Table sale_items {
   id String [pk]
   total_quantity Int [not null]
   total_amount Float [not null]
@@ -193,6 +193,8 @@ Table SaleItem {
   SaleVoucher sale_voucher [not null]
   product_id String [not null]
   Product products [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
 }
 
 Table transaction {
@@ -256,9 +258,9 @@ Ref: instock_on_product.product_id > products.id [delete: Cascade]
 
 Ref: sale_voucher.customer_id > customers.id [delete: Cascade]
 
-Ref: SaleItem.sale_voucher_id > sale_voucher.id [delete: Cascade]
+Ref: sale_items.sale_voucher_id > sale_voucher.id [delete: Cascade]
 
-Ref: SaleItem.product_id > products.id [delete: Cascade]
+Ref: sale_items.product_id > products.id [delete: Cascade]
 
 Ref: transaction.issued_by_id > users.id [delete: Cascade]
 

@@ -273,6 +273,12 @@ model SaleItem {
   SaleVoucher     SaleVoucher @relation(fields: [sale_voucher_id], references: [id],onDelete: Cascade)
   product_id      String
   Product         Product     @relation(fields: [product_id], references: [id],onDelete: Cascade)
+
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+  
+  @@map("sale_items")
+
 }
 
 model Transaction {

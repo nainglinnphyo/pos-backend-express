@@ -106,4 +106,18 @@ export class Product {
         
       }
      }
+
+     async fetchProductPriceList({product_id,callback}) {
+        try {
+            await productPriceList.findMany({
+              where:{
+                product_id:product_id
+              }
+            })
+            .then((data)=>callback(null,data))
+            .catch((err)=> callback(err,null))
+        } catch (error) {
+          
+        }
+     }
 }

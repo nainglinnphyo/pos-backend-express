@@ -146,4 +146,5 @@ export class Pos {
           .then((data)=> callback(null,data))
           .catch((err)=> callback(err,null))
      }
+
 }
