@@ -124,21 +124,5 @@ export class Product {
         }
      }
 
-  //    async fetchPriceList({product_id,callback}) {
-  //     try {
-  //         await price.findMany({
-  //           where:{
-  //             product_id:product_id
-  //           },
-  //           include:{
-  //             Price:true,
-  //             Product:true,
-  //           }
-  //         })
-  //         .then((data)=>callback(null,data))
-  //         .catch((err)=> callback(err,null))
-  //     } catch (error) {
-        
-  //     }
-  //  }
+
 }

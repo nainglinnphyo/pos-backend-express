@@ -2,57 +2,57 @@ import { Request, Response } from 'express';
 import { Responser } from '../utilities';
 import { Unit } from './unit.services';
 
-interface ICategory {
-     category_name: string;
+interface IUnitCreate {
+     unit_name: string;
 }
 
 const unit = new Unit();
 
 
-// const createCategory = async (req: Request, res: Response) => {
-//      try {
-//           const { category_name }: ICategory = req.body;
-//           const data = await category.createCategory({
-//               category_name,
-//                callback: (err: any, data: any) => {
-//                     if (err) {
-//                          return Responser({
-//                               res: res,
-//                               status: 400,
-//                               body: null,
-//                               message: err,
-//                               devMessage: err,
-//                          });
-//                     } else if (data) {
-//                          return Responser({
-//                               res: res,
-//                               status: 201,
-//                               body: data,
-//                               message: "Category Create Success!",
-//                               devMessage: "",
-//                          });
-//                     } else {
-//                          return Responser({
-//                               res: res,
-//                               status: 500,
-//                               body: null,
-//                               message: err,
-//                               devMessage: err.message,
-//                          });
-//                     }
-//                }
-//           })
-//      } catch (error) {
-//           return Responser({
-//                res: res,
-//                status: 500,
-//                body: null,
-//                message: error,
-//                devMessage: error.message,
-//           });
-//      }
+const createUnit = async (req: Request, res: Response) => {
+     try {
+          const { unit_name }: IUnitCreate = req.body;
+          const data = await unit.createUnit({
+               unit_name,
+               callback: (err: any, data: any) => {
+                    if (err) {
+                         return Responser({
+                              res: res,
+                              status: 400,
+                              body: null,
+                              message: err,
+                              devMessage: err,
+                         });
+                    } else if (data) {
+                         return Responser({
+                              res: res,
+                              status: 201,
+                              body: data,
+                              message: "Unit Create Success!",
+                              devMessage: "",
+                         });
+                    } else {
+                         return Responser({
+                              res: res,
+                              status: 500,
+                              body: null,
+                              message: err,
+                              devMessage: err.message,
+                         });
+                    }
+               }
+          })
+     } catch (error) {
+          return Responser({
+               res: res,
+               status: 500,
+               body: null,
+               message: error,
+               devMessage: error.message,
+          });
+     }
 
-// }
+}
 
 const fetchUnit = async(req:Request, res: Response) =>{
      try {
@@ -90,4 +90,4 @@ const fetchUnit = async(req:Request, res: Response) =>{
      }
 }
 
-export const unitController = { fetchUnit};
+export const unitController = { fetchUnit,createUnit};
