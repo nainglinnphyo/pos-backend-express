@@ -215,4 +215,45 @@ const fetchProductPriceList = async (req: Request, res: Response) => {
 
      }
 }
-export const productController = {editProduct, createProduct, fetchProduct, createProductPriceList,fetchProductPriceList };
+
+const fetchPirceList = async (req: Request, res: Response) => {
+     try {
+          const product = new Product();
+
+          const { product_id} = req.query;
+          const data = await product.fetchPriceList({
+               product_id,
+               callback: (err: any, data: any) => {
+                    if (err) {
+                         return Responser({
+                              res: res,
+                              status: 400,
+                              body: null,
+                              message: "Somethin went wrong with product price list fetch",
+                              devMessage: err.message,
+                         });
+                    } else if (data) {
+                         return Responser({
+                              res: res,
+                              status: 200,
+                              body: data,
+                              message: "Price list fetch Success!",
+                              devMessage: "",
+                         });
+                    } else {
+                         return Responser({
+                              res: res,
+                              status: 500,
+                              body: null,
+                              message: err,
+                              devMessage: err.message,
+                         });
+                    }
+               }
+
+          })
+     } catch (error) {
+
+     }
+}
+export const productController = {editProduct, createProduct, fetchProduct, createProductPriceList,fetchProductPriceList,fetchPirceList };
