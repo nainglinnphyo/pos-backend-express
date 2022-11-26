@@ -19,6 +19,16 @@ interface IProductEdit {
   unit_id:string;
   callback:any;
 }
+interface IProductPriceEdit {
+  price_list_id: string;
+  amount:number;
+  product_id:string;
+}
+interface IProductPriceListEdit {
+  data:IProductPriceEdit[],
+  product_id:string;
+  callback:Function
+}
 export class Product {
 
      async createProdcut({ product_code,product_name,category_id,unit_id ,callback }) {
@@ -143,6 +153,28 @@ export class Product {
       })
       .then((data)=>callback(null,data))
       .catch((err)=> callback(err,null))
+     }
+
+     async editProductPrice({data,callback}:IProductPriceListEdit){
+        try {
+          let resData:any = []
+            for (let index = 0; index < data.length; index++) {
+              const element = data[index];
+               await productPriceList.update({
+                where:{
+                  id:element.price_list_id
+                },
+                data:{
+                  amount:parseInt(element.amount.toString())
+               }
+              })
+              .then((data)=>resData.push(data))
+              .catch((err)=> callback(err,null))
+            }
+            callback(null,resData)
+        } catch (error) {
+          
+        }
      }
 
 }

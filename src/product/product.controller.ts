@@ -92,6 +92,7 @@ const fetchProduct = async (req: Request, res: Response) => {
 
      }
 }
+
 const createProductPriceList = async (req: Request, res: Response) => {
      try {
           const product = new Product();
@@ -112,6 +113,44 @@ const createProductPriceList = async (req: Request, res: Response) => {
                               status: 201,
                               body: data,
                               message: "Product Price List Create Success!",
+                              devMessage: "",
+                         });
+                    } else {
+                         return Responser({
+                              res: res,
+                              status: 500,
+                              body: null,
+                              message: err,
+                              devMessage: err.message,
+                         });
+                    }
+               }
+          })
+     } catch (error) {
+
+     }
+}
+
+const editProductPriceList = async (req: Request, res: Response) => {
+     try {
+          const product = new Product();
+          const { product_id,data } = req.body
+          const resData = await product.editProductPrice({
+               product_id,data, callback: (err: any, data: any) => {
+                    if (err) {
+                         return Responser({
+                              res: res,
+                              status: 400,
+                              body: null,
+                              message: "Somethin went wrong with product price list edit",
+                              devMessage: err.message,
+                         });
+                    } else if (data) {
+                         return Responser({
+                              res: res,
+                              status: 200,
+                              body: data,
+                              message: "Product Price List edit Success!",
                               devMessage: "",
                          });
                     } else {
@@ -256,4 +295,4 @@ const fetchPirceList = async (req: Request, res: Response) => {
 
      }
 }
-export const productController = {editProduct, createProduct, fetchProduct, createProductPriceList,fetchProductPriceList,fetchPirceList };
+export const productController = { editProductPriceList,editProduct, createProduct, fetchProduct, createProductPriceList,fetchProductPriceList,fetchPirceList };
