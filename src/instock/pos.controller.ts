@@ -23,6 +23,26 @@ const createInstock = async (req: Request, res: Response) => {
         }
 }
 
+const createSale = async (req: Request, res: Response) => {
+     try {
+       const {customer_id,total,discount,balance,grand_total,saleData,transaction_remark,paid,payment_method_id} = req.body
+       const parseIntTotal = parseInt(total)
+       const parseIntDiscount = parseInt(discount)
+       const parseIntBalance = parseInt(balance)
+       const parseIntGrandTotal = parseInt(grand_total)
+       const parseIntPaid = parseInt(paid)
+       const data = await pos.createSale({customer_id,parseIntGrandTotal,parseIntTotal,parseIntDiscount,saleData,parseIntPaid,parseIntBalance,transaction_remark,payment_method_id,callback:(err:any,data:any)=>{
+            if(err){
+                 return Responser({res,status:400,message:err.message,devMessage:err,body:''})
+            }else if(data){
+                 return Responser({res,status:201,message:'Sale Success',devMessage:'',body:data})
+            }
+       }})
+     } catch (error) {
+       
+     }
+}
+
 const fetchTransaction = async (req: Request, res: Response) =>{
      try {
           const data = await pos.fetchTransaction({callback:(err:any,data:any)=>{
@@ -79,4 +99,4 @@ const fetchInStockTransactionDetails = async (req: Request, res: Response) =>{
           
      }
 }
-export const posController = {fetchInStockTransactionDetails, createInstock,fetchTransaction,fetchPaymentMethod,fetchWareHouse };
+export const posController = {fetchInStockTransactionDetails, createInstock,fetchTransaction,fetchPaymentMethod,fetchWareHouse ,createSale};

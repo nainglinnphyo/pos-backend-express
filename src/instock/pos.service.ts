@@ -171,7 +171,7 @@ export class Pos {
                               remark: transaction_remark,
                               total: parseIntTotal,
                               payment_method_id: payment_method_id,
-                              instock_voucher_id: saleVoucherData.id
+                              sale_voucher_id: saleVoucherData.id
                          }
                     })
                          .then(async () => {
@@ -224,6 +224,19 @@ export class Pos {
           })
                .then((data) => callback(null, data))
                .catch((err) => callback(err, null))
+     }
+
+     async fetchInstockInvoiceList({callback}){
+          await inStockVoucher.findMany({
+               include:{
+                    Transaction:true,
+                    Instock:true,
+                    Supplier:true
+               },
+               orderBy:{
+                    created_at:"desc"
+               }
+          })
      }
 
 }
