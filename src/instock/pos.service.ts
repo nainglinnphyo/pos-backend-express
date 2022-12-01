@@ -230,7 +230,11 @@ export class Pos {
           await inStockVoucher.findMany({
                include:{
                     Transaction:true,
-                    Instock:true,
+                    Instock:{
+                         include:{
+                              Product:true
+                         }
+                    },
                     Supplier:true
                },
                orderBy:{
