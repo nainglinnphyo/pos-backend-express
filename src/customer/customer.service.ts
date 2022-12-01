@@ -29,4 +29,16 @@ export class Customer {
           })
      }
 
+     async deleteCustomer({customer_id,callback}){
+          await customer.delete({
+               where:{
+                    id: customer_id
+               }
+          })
+          .then((data)=>callback(null,data))
+          .catch((err)=>{
+               callback(err.meta.cause,null)
+          })
+     }
+
 }

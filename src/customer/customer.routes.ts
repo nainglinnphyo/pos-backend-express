@@ -4,5 +4,6 @@ const customerRoute = Router();
 
 customerRoute.get("/fetch", customerController.fetchCustomer);
 customerRoute.post("/create", customerController.createCustomer);
+customerRoute.delete("/delete/:customer_id", customerController.deleteCustomer);
 
 export default customerRoute;
