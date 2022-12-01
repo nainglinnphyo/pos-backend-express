@@ -99,4 +99,36 @@ const fetchInStockTransactionDetails = async (req: Request, res: Response) =>{
           
      }
 }
-export const posController = {fetchInStockTransactionDetails, createInstock,fetchTransaction,fetchPaymentMethod,fetchWareHouse ,createSale};
+
+const fetchInstockInvoiceList = async (req:Request, res:Response) => {
+     try {
+          const data = await pos.fetchInstockInvoiceList({
+               callback:(err:any,data:any)=>{
+                    if(err){
+                         return Responser({res,status:400,message:err.message,devMessage:err,body:''})
+                    }else if(data){
+                         return Responser({res,status:200,message:'Instock invoice fetch Success',devMessage:'',body:data})
+                    }
+               }
+          })
+     } catch (error) {
+          
+     }
+}
+
+const fetchSaleInvoiceList = async (req:Request, res:Response) => {
+     try {
+          const data = await pos.fetchSaleInvoiceList({
+               callback:(err:any,data:any)=>{
+                    if(err){
+                         return Responser({res,status:400,message:err.message,devMessage:err,body:''})
+                    }else if(data){
+                         return Responser({res,status:200,message:'Sale invoice fetch Success',devMessage:'',body:data})
+                    }
+               }
+          })
+     } catch (error) {
+          
+     }
+}
+export const posController = {fetchSaleInvoiceList,fetchInstockInvoiceList,fetchInStockTransactionDetails, createInstock,fetchTransaction,fetchPaymentMethod,fetchWareHouse ,createSale};

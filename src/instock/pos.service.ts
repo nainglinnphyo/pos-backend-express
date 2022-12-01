@@ -237,6 +237,23 @@ export class Pos {
                     created_at:"desc"
                }
           })
+          .then((data)=> callback(null, data))
+          .catch((err)=> callback(err,null))
+     }
+
+     async fetchSaleInvoiceList({callback}){
+          await saleVoucher.findMany({
+               include:{
+                    Transaction:true,
+                    SaleItem:true,
+                    Customer:true
+               },
+               orderBy:{
+                    created_at:"desc"
+               }
+          })
+          .then((data)=> callback(null, data))
+          .catch((err)=> callback(err,null))
      }
 
 }

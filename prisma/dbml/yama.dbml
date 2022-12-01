@@ -172,6 +172,7 @@ Table instock_on_product {
 
 Table sale_voucher {
   id String [pk]
+  voucher_no Int [increment, unique, not null]
   discount Float
   grand_total Float
   total Float
