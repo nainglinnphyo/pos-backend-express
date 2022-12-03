@@ -53,7 +53,8 @@ export class Pos {
                     total: parseIntTotal,
                     grand_total: parseIntGrandTotal,
                     discount: parseIntDiscount,
-                    voucher_status: parseIntBalance === 0 ? 'done' : 'remainder'
+                    voucher_status: parseIntBalance === 0 ? 'done' : 'remainder',
+                    balance: parseIntBalance
                },
           })
                .then(async (inStockVoucherData) => {
@@ -126,7 +127,8 @@ export class Pos {
                     total: parseIntTotal,
                     grand_total: parseIntGrandTotal,
                     discount: parseIntDiscount,
-                    voucher_status: parseIntBalance === 0 ? 'done' : 'remainder'
+                    voucher_status: parseIntBalance === 0 ? 'done' : 'remainder',
+                    balance: parseIntBalance
                },
           })
                .then(async (saleVoucherData) => {
@@ -226,38 +228,38 @@ export class Pos {
                .catch((err) => callback(err, null))
      }
 
-     async fetchInstockInvoiceList({callback}){
+     async fetchInstockInvoiceList({ callback }) {
           await inStockVoucher.findMany({
-               include:{
-                    Transaction:true,
-                    Instock:{
-                         include:{
-                              Product:true
+               include: {
+                    Transaction: true,
+                    Instock: {
+                         include: {
+                              Product: true
                          }
                     },
-                    Supplier:true
+                    Supplier: true
                },
-               orderBy:{
-                    created_at:"desc"
+               orderBy: {
+                    created_at: "desc"
                }
           })
-          .then((data)=> callback(null, data))
-          .catch((err)=> callback(err,null))
+               .then((data) => callback(null, data))
+               .catch((err) => callback(err, null))
      }
 
-     async fetchSaleInvoiceList({callback}){
+     async fetchSaleInvoiceList({ callback }) {
           await saleVoucher.findMany({
-               include:{
-                    Transaction:true,
-                    SaleItem:true,
-                    Customer:true
+               include: {
+                    Transaction: true,
+                    SaleItem: true,
+                    Customer: true
                },
-               orderBy:{
-                    created_at:"desc"
+               orderBy: {
+                    created_at: "desc"
                }
           })
-          .then((data)=> callback(null, data))
-          .catch((err)=> callback(err,null))
+               .then((data) => callback(null, data))
+               .catch((err) => callback(err, null))
      }
 
 }

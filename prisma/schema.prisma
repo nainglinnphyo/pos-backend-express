@@ -193,6 +193,7 @@ model InStockVoucher {
   total            Float?
   grand_total      Float?
   round_adjustment Float?
+  balance          Float  @default(0)
 
   supplier_id    String
   Supplier       Supplier        @relation(fields: [supplier_id], references: [id], onDelete: Cascade)
@@ -253,6 +254,7 @@ model SaleVoucher {
   grand_total      Float?
   total            Float?
   round_adjustment Float?
+  balance          Float  @default(0)
 
   customer_id    String
   Customer       Customer        @relation(fields: [customer_id], references: [id], onDelete: Cascade)

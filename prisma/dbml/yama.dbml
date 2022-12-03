@@ -134,6 +134,7 @@ Table instock_voucher {
   total Float
   grand_total Float
   round_adjustment Float
+  balance Float [not null, default: 0]
   supplier_id String [not null]
   Supplier suppliers [not null]
   voucher_status Voucher_Status
@@ -177,6 +178,7 @@ Table sale_voucher {
   grand_total Float
   total Float
   round_adjustment Float
+  balance Float [not null, default: 0]
   customer_id String [not null]
   Customer customers [not null]
   voucher_status Voucher_Status
