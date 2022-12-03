@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import moment from 'moment';
 import { superLog } from '../utilities/superLog';
 const { inStockVoucher, paymentMethod, warehouse, instock, inStockOnProduct, transaction, productPriceList, saleVoucher, saleItem } = new PrismaClient();
 
@@ -43,6 +44,27 @@ interface ICreateSale {
      payment_method_id: string;
      callback: any;
 }
+
+function formatDate(date: any) {
+     var dd = date.getDate();
+     var mm = date.getMonth() + 1;
+     var yyyy = date.getFullYear();
+     if (dd < 10) { dd = '0' + dd }
+     if (mm < 10) { mm = '0' + mm }
+     date = mm + '/' + dd + '/' + yyyy;
+     return date
+}
+function Last10Days() {
+     var result: any = [];
+     for (var i = 0; i < 10; i++) {
+          var d = new Date();
+          d.setDate(d.getDate() - i);
+          result.push(formatDate(d))
+     }
+
+     return (result.join(','));
+}
+
 export class Pos {
 
      async createInstock({ supplier_id, parseIntTotal, parseIntGrandTotal, parseIntDiscount, warehouse_id, instockData, parseIntPaid, parseIntBalance, transaction_remark, payment_method_id, callback }: ICreateInstock) {
@@ -252,8 +274,8 @@ export class Pos {
                include: {
                     Transaction: true,
                     SaleItem: {
-                         include:{
-                              Product:true
+                         include: {
+                              Product: true
                          }
                     },
                     Customer: true
@@ -264,6 +286,43 @@ export class Pos {
           })
                .then((data) => callback(null, data))
                .catch((err) => callback(err, null))
+     }
+
+     async dashboardData({ callback }) {
+          let resData: any = {}
+          const tenDays = Last10Days().split(",");
+          let dayByDaySale:any = []
+          let dayByDayInstock:any = []
+
+          for (let index = 0; index < tenDays.length; index++) {
+               const element = tenDays[index];
+               const count = await saleVoucher.count({
+                    where: {
+                         created_at: {
+                              gte: new Date(moment(element, "MM-DD-YYYY HH:mm:ss UTC").format("YYYY-MM-DD HH:mm:ss UTC")),
+                              lte: new Date(moment(element, "MM-DD-YYYY HH:mm:ss UTC").add(moment.duration(24, "hours")).format("YYYY-MM-DD HH:mm:ss UTC"))
+                         },
+                    }
+               })
+               const instockCount = await inStockVoucher.count({
+                    where: {
+                         created_at: {
+                              gte: new Date(moment(element, "MM-DD-YYYY HH:mm:ss UTC").format("YYYY-MM-DD HH:mm:ss UTC")),
+                              lte: new Date(moment(element, "MM-DD-YYYY HH:mm:ss UTC").add(moment.duration(24, "hours")).format("YYYY-MM-DD HH:mm:ss UTC"))
+                         },
+                    }
+               })
+               dayByDaySale.push(count)
+               dayByDayInstock.push(instockCount)
+          }
+          const chartData = {
+               date: tenDays,
+               saleCount: dayByDaySale,
+               instockCount: dayByDayInstock
+          }
+          resData.chartData = chartData
+
+          callback(null,resData)
      }
 
 }

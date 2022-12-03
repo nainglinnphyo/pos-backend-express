@@ -10,5 +10,6 @@ posRouter.get('/warehouse/fetch',posController.fetchWareHouse)
 posRouter.get('/instock-details',posController.fetchInStockTransactionDetails)
 posRouter.get('/fetch-instock-invoice',posController.fetchInstockInvoiceList)
 posRouter.get('/fetch-sale-invoice',posController.fetchSaleInvoiceList)
+posRouter.get('/fetch-dashboard-data',posController.dashboardData)
 
 export default posRouter;

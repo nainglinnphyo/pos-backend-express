@@ -131,4 +131,20 @@ const fetchSaleInvoiceList = async (req:Request, res:Response) => {
           
      }
 }
-export const posController = {fetchSaleInvoiceList,fetchInstockInvoiceList,fetchInStockTransactionDetails, createInstock,fetchTransaction,fetchPaymentMethod,fetchWareHouse ,createSale};
+
+const dashboardData = async (req:Request, res:Response) => {
+     try {
+          const data = await pos.dashboardData({
+               callback:(err:any,data:any)=>{
+                    if(err){
+                         return Responser({res,status:400,message:err.message,devMessage:err,body:''})
+                    }else if(data){
+                         return Responser({res,status:200,message:'fetch Success',devMessage:'',body:data})
+                    }
+               }
+          })
+     } catch (error) {
+          
+     }
+}
+export const posController = {dashboardData,fetchSaleInvoiceList,fetchInstockInvoiceList,fetchInStockTransactionDetails, createInstock,fetchTransaction,fetchPaymentMethod,fetchWareHouse ,createSale};
