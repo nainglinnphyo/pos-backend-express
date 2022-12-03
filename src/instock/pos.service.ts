@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import moment from 'moment';
 import { superLog } from '../utilities/superLog';
-const { inStockVoucher, paymentMethod, warehouse, instock, inStockOnProduct, transaction, productPriceList, saleVoucher, saleItem } = new PrismaClient();
+const { inStockVoucher, paymentMethod, product, warehouse, instock, inStockOnProduct, transaction, productPriceList, saleVoucher, saleItem } = new PrismaClient();
 
 interface IInstockData {
      product_id: string;
@@ -46,13 +46,18 @@ interface ICreateSale {
 }
 
 function formatDate(date: any) {
-     var dd = date.getDate();
-     var mm = date.getMonth() + 1;
-     var yyyy = date.getFullYear();
-     if (dd < 10) { dd = '0' + dd }
-     if (mm < 10) { mm = '0' + mm }
-     date = mm + '/' + dd + '/' + yyyy;
+     var d = new Date(date),
+          month = '' + (d.getMonth() + 1),
+          day = '' + d.getDate(),
+          year = d.getFullYear();
+
+     if (month.length < 2)
+          month = '0' + month;
+     if (day.length < 2)
+          day = '0' + day;
+     date = month + '/' + day + '/' + year;
      return date
+
 }
 function Last10Days() {
      var result: any = [];
@@ -291,9 +296,9 @@ export class Pos {
      async dashboardData({ callback }) {
           let resData: any = {}
           const tenDays = Last10Days().split(",");
-          let dayByDaySale:any = []
-          let dayByDayInstock:any = []
-
+          let saleData: any = []
+          let dbdSale: any = []
+          let dbdInstock: any = []
           for (let index = 0; index < tenDays.length; index++) {
                const element = tenDays[index];
                const count = await saleVoucher.count({
@@ -304,6 +309,7 @@ export class Pos {
                          },
                     }
                })
+               dbdSale.push(count)
                const instockCount = await inStockVoucher.count({
                     where: {
                          created_at: {
@@ -312,17 +318,40 @@ export class Pos {
                          },
                     }
                })
-               dayByDaySale.push(count)
-               dayByDayInstock.push(instockCount)
+               dbdInstock.push(instockCount)
+               saleData.push({ label: element, value: count })
           }
-          const chartData = {
-               date: tenDays,
-               saleCount: dayByDaySale,
-               instockCount: dayByDayInstock
+          resData.saleData = saleData.reverse()
+          resData.saleAndInstockCount = {
+               date: tenDays.reverse(),
+               saleCount: dbdSale.reverse(),
+               instockCount: dbdInstock.reverse()
           }
-          resData.chartData = chartData
 
-          callback(null,resData)
+          //top sale product
+          const topSale = await product.findMany({
+               include:{
+                    _count:{
+                         select:{SaleItem:true}
+                    }
+               },
+               // by:['id'],
+               where: {
+                    SaleItem: {
+                         some: {}
+                    }
+               },
+               orderBy:{
+                    SaleItem:{
+                         _count:"desc"
+                    }
+               },
+               take:5
+               
+          })
+          
+          resData.topSale = topSale
+          callback(null, resData)
      }
 
 }
