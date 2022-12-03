@@ -251,7 +251,11 @@ export class Pos {
           await saleVoucher.findMany({
                include: {
                     Transaction: true,
-                    SaleItem: true,
+                    SaleItem: {
+                         include:{
+                              Product:true
+                         }
+                    },
                     Customer: true
                },
                orderBy: {
