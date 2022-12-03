@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { ICustomerCreate, ICustomerEdit } from '../@types/customer';
 const { customer } = new PrismaClient();
 
 export class Customer {
@@ -12,7 +13,7 @@ export class Customer {
           })
      }
 
-     async createCustomer({customer_name,short_name,phone,address,callback}){
+     async createCustomer({customer_name,short_name,phone,address,callback}:ICustomerCreate){
           await customer.create({
                data:{
                     customer_name:customer_name,
@@ -39,6 +40,22 @@ export class Customer {
           .catch((err)=>{
                callback(err.meta.cause,null)
           })
+     }
+
+     async editCustomer({customer_id,customer_name,short_name,phone,address,callback}:ICustomerEdit){
+          await customer.update({
+               where:{
+                    id:customer_id
+               },
+               data:{
+                    customer_name: customer_name,
+                    short_name: short_name,
+                    address:address,
+                    phone:phone,
+               }
+          })
+          .then((data)=>callback(null,data))
+          .catch((err)=>callback(err,null))
      }
 
 }
