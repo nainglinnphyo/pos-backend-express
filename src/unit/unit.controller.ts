@@ -54,6 +54,52 @@ const createUnit = async (req: Request, res: Response) => {
 
 }
 
+const editUnit = async (req: Request, res: Response) => {
+     try {
+          const { unit_name } = req.body;
+          const {unit_id} = req.params;
+          const data = await unit.editUnit({
+               unit_id,unit_name,
+               callback: (err: any, data: any) => {
+                    if (err) {
+                         return Responser({
+                              res: res,
+                              status: 400,
+                              body: null,
+                              message: err,
+                              devMessage: err,
+                         });
+                    } else if (data) {
+                         return Responser({
+                              res: res,
+                              status: 201,
+                              body: data,
+                              message: "Unit Edit Success!",
+                              devMessage: "",
+                         });
+                    } else {
+                         return Responser({
+                              res: res,
+                              status: 500,
+                              body: null,
+                              message: err,
+                              devMessage: err.message,
+                         });
+                    }
+               }
+          })
+     } catch (error) {
+          return Responser({
+               res: res,
+               status: 500,
+               body: null,
+               message: error,
+               devMessage: error.message,
+          });
+     }
+
+}
+
 const fetchUnit = async(req:Request, res: Response) =>{
      try {
           const data = await unit.fetchUnit({
@@ -90,4 +136,4 @@ const fetchUnit = async(req:Request, res: Response) =>{
      }
 }
 
-export const unitController = { fetchUnit,createUnit};
+export const unitController = { fetchUnit,createUnit,editUnit};

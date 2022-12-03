@@ -23,4 +23,17 @@ export class Unit {
           })
      }
 
+     async editUnit({unit_id,unit_name,callback}) {
+        await unit.update({
+          where:{
+            id:unit_id,
+          },
+          data:{
+            unit_name:unit_name,
+          }
+        })
+        .then((data)=>callback(null,data))
+        .catch((e)=>callback(e,null))
+     }
+
 }
