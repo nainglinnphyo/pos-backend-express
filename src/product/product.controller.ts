@@ -173,13 +173,14 @@ const editProduct = async (req: Request, res: Response) => {
      try {
           const product = new Product();
 
-          const { id, product_name, product_code, category_id, unit_id } = req.body;
+          const { id, product_name, product_code, category_id, unit_id,purchase_price } = req.body;
           const data = await product.productEdit({
                id,
                product_name,
                product_code,
                unit_id,
                category_id,
+               purchase_price,
                callback: (err: any, data: any) => {
                     if (err) {
                          return Responser({

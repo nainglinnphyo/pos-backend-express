@@ -42,7 +42,7 @@ if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'developme
 			status: 500,
 			body: null,
 			message: "Under Maintenance Mode",
-			devMessage: "ှSrver is under Maintenance Mode",
+			devMessage: "Server is under Maintenance Mode",
 		});
 	});
 }

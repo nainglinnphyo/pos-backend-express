@@ -17,6 +17,7 @@ interface IProductEdit {
   product_name: string;
   category_id:string;
   unit_id:string;
+  purchase_price:number;
   callback:any;
 }
 interface IProductPriceEdit {
@@ -102,7 +103,7 @@ export class Product {
         }
      }
 
-     async productEdit({id,product_code,product_name,category_id,unit_id,callback}:IProductEdit){
+     async productEdit({id,product_code,product_name,category_id,unit_id,purchase_price,callback}:IProductEdit){
       try {
           await product.update({
             where:{
@@ -112,7 +113,8 @@ export class Product {
               product_code:product_code,
               product_name:product_name,
               category_id:category_id,
-              unit_id:unit_id
+              unit_id:unit_id,
+              purchase_price:parseInt(purchase_price.toString()),
             }
           })
           .then((data)=>callback(null,data))

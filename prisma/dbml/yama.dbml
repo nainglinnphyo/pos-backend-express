@@ -30,6 +30,7 @@ Table products {
   id String [pk]
   product_code String [not null]
   product_name String [not null]
+  purchase_price Int [default: 0]
   category_id String [not null]
   Category categories [not null]
   unit_id String [not null]

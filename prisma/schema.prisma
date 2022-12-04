@@ -48,7 +48,7 @@ model Product {
   id           String @id @default(uuid())
   product_code String
   product_name String
-
+  purchase_price Int? @default(0)
   category_id String
   Category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
   unit_id     String
