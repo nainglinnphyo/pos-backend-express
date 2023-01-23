@@ -70,7 +70,7 @@ model Price {
   id   String @id @default(uuid())
   name String
 
-  Customer Customer[]
+  Customer           Customer[]
   ProductPriceList   ProductPriceList[]
   CompositePriceList CompositePriceList[]
 
@@ -263,12 +263,25 @@ model SaleVoucher {
   Customer       Customer        @relation(fields: [customer_id], references: [id], onDelete: Cascade)
   voucher_status Voucher_Status?
 
-  created_at  DateTime      @default(now())
-  updated_at  DateTime      @updatedAt
-  Transaction Transaction[]
-  SaleItem    SaleItem[]
+  created_at      DateTime          @default(now())
+  updated_at      DateTime          @updatedAt
+  Transaction     Transaction[]
+  SaleItem        SaleItem[]
+  SaleTransaction SaleTransaction[]
 
   @@map("sale_voucher")
+}
+
+model SaleTransaction {
+  id              String      @id @default(uuid())
+  sale_voucher_id String
+  SaleVoucher     SaleVoucher @relation(fields: [sale_voucher_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  amount          Float       @default(0)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("sale_transactions")
 }
 
 model SaleItem {

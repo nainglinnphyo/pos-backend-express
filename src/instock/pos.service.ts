@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import moment from 'moment';
 import { superLog } from '../utilities/superLog';
-const { inStockVoucher, paymentMethod, product,customer, warehouse, instock, inStockOnProduct, transaction, productPriceList, saleVoucher, saleItem } = new PrismaClient();
+const { inStockVoucher, paymentMethod, product, customer, saleTransaction, warehouse, instock, inStockOnProduct, transaction, productPriceList, saleVoucher, saleItem } = new PrismaClient();
 
 interface IInstockData {
      product_id: string;
@@ -159,6 +159,13 @@ export class Pos {
                },
           })
                .then(async (saleVoucherData) => {
+
+                    await saleTransaction.create({
+                         data: {
+                              amount: saleVoucherData?.grand_total || 0,
+                              sale_voucher_id: saleVoucherData?.id
+                         }
+                    });
                     for (let index = 0; index < saleData.length; index++) {
                          const element: ISaleData = saleData[index];
                          await saleItem.create({
@@ -330,9 +337,9 @@ export class Pos {
 
           //top sale product
           const topSale = await product.findMany({
-               include:{
-                    _count:{
-                         select:{SaleItem:true}
+               include: {
+                    _count: {
+                         select: { SaleItem: true }
                     }
                },
                // by:['id'],
@@ -341,46 +348,46 @@ export class Pos {
                          some: {}
                     }
                },
-               orderBy:{
-                    SaleItem:{
-                         _count:"desc"
+               orderBy: {
+                    SaleItem: {
+                         _count: "desc"
                     }
                },
-               take:5
-               
+               take: 5
+
           })
 
           const topCustomers = await saleVoucher.groupBy({
-               by:["customer_id"],
-               orderBy:{
-                    _sum:{
-                         grand_total:"desc"
+               by: ["customer_id"],
+               orderBy: {
+                    _sum: {
+                         grand_total: "desc"
                     }
                },
-               _sum:{
-                    grand_total:true,
+               _sum: {
+                    grand_total: true,
                },
-               take:5
-               
+               take: 5
+
           })
-          let topCusData:any = [];
+          let topCusData: any = [];
           for (let index = 0; index < topCustomers.length; index++) {
                const element = topCustomers[index];
                const cs = await customer.findUnique({
-                    where:{
-                         id:element.customer_id
+                    where: {
+                         id: element.customer_id
                     },
-                    select:{
-                         customer_name:true,
-                         short_name:true
+                    select: {
+                         customer_name: true,
+                         short_name: true
                     }
                })
                const voucherCount = await saleVoucher.count({
-                    where:{
-                         customer_id:element.customer_id
+                    where: {
+                         customer_id: element.customer_id
                     }
                })
-               topCusData.push({customer:cs,totalPaid:element._sum,voucherCount:voucherCount}) 
+               topCusData.push({ customer: cs, totalPaid: element._sum, voucherCount: voucherCount })
           }
           resData.topCustomers = topCusData
           resData.topSale = topSale

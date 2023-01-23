@@ -190,6 +190,16 @@ Table sale_voucher {
   updated_at DateTime [not null]
   Transaction transaction [not null]
   SaleItem sale_items [not null]
+  SaleTransaction sale_transactions [not null]
+}
+
+Table sale_transactions {
+  id String [pk]
+  sale_voucher_id String [not null]
+  SaleVoucher sale_voucher [not null]
+  amount Float [not null, default: 0]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
 }
 
 Table sale_items {
@@ -266,6 +276,8 @@ Ref: instock_on_product.warehouse_id > warehouses.id [delete: Cascade]
 Ref: instock_on_product.product_id > products.id [delete: Cascade]
 
 Ref: sale_voucher.customer_id > customers.id [delete: Cascade]
+
+Ref: sale_transactions.sale_voucher_id > sale_voucher.id [delete: Cascade]
 
 Ref: sale_items.sale_voucher_id > sale_voucher.id [delete: Cascade]
 
