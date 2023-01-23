@@ -162,7 +162,7 @@ export class Pos {
 
                     await saleTransaction.create({
                          data: {
-                              amount: saleVoucherData?.grand_total || 0,
+                              amount: parseIntPaid || 0,
                               sale_voucher_id: saleVoucherData?.id
                          }
                     });
