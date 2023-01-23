@@ -175,4 +175,19 @@ const fetchSaleTransaction = async (req: Request, res: Response) => {
      }
 }
 
-export const posController = { fetchSaleTransaction,dashboardData, fetchSaleInvoiceList, fetchInstockInvoiceList, fetchInStockTransactionDetails, createInstock, fetchTransaction, fetchPaymentMethod, fetchWareHouse, createSale };
+const createSaleTransaction = async (req: Request, res: Response) => {
+     try {
+          const { saleVoucherId, amount } = req.body
+          await pos.createSaleTransaction({ saleVoucherId, amount })
+               .then((data) => {
+                    return Responser({ res, status: 200, message: "Crate Success", devMessage: "", body: data })
+               })
+               .catch((err) => {
+                    return Responser({ res, status: 400, message: err.message, devMessage: err.message, body: null })
+               })
+     } catch (error) {
+
+     }
+}
+
+export const posController = { createSaleTransaction, fetchSaleTransaction, dashboardData, fetchSaleInvoiceList, fetchInstockInvoiceList, fetchInStockTransactionDetails, createInstock, fetchTransaction, fetchPaymentMethod, fetchWareHouse, createSale };

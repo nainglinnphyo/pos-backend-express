@@ -402,4 +402,13 @@ export class Pos {
           })
      }
 
+     async createSaleTransaction({ saleVoucherId, amount }) {
+          return saleTransaction.create({
+               data: {
+                    amount: amount,
+                    sale_voucher_id: saleVoucherId
+               }
+          })
+     }
+
 }
