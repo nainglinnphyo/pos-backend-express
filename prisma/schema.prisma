@@ -45,14 +45,14 @@ model Category {
 }
 
 model Product {
-  id           String @id @default(uuid())
-  product_code String
-  product_name String
-  purchase_price Int? @default(0)
-  category_id String
-  Category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
-  unit_id     String
-  Unit        Unit     @relation(fields: [unit_id], references: [id], onDelete: Cascade)
+  id             String   @id @default(uuid())
+  product_code   String
+  product_name   String
+  purchase_price Int?     @default(0)
+  category_id    String
+  Category       Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  unit_id        String
+  Unit           Unit     @relation(fields: [unit_id], references: [id], onDelete: Cascade)
 
   Instock          Instock[]
   ProductPriceList ProductPriceList[]
@@ -70,6 +70,7 @@ model Price {
   id   String @id @default(uuid())
   name String
 
+  Customer Customer[]
   ProductPriceList   ProductPriceList[]
   CompositePriceList CompositePriceList[]
 
@@ -163,6 +164,8 @@ model Customer {
   short_name    String?
   address       String?
   phone         String?
+  pirce_id      String?
+  pirce         Price?  @relation(fields: [pirce_id], references: [id])
 
   created_at  DateTime      @default(now())
   updated_at  DateTime      @updatedAt

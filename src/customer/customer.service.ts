@@ -13,9 +13,10 @@ export class Customer {
           })
      }
 
-     async createCustomer({customer_name,short_name,phone,address,callback}:ICustomerCreate){
+     async createCustomer({customer_name,short_name,phone,address,price_id,callback}:ICustomerCreate){
           await customer.create({
                data:{
+                    pirce_id:price_id,
                     customer_name:customer_name,
                     short_name:short_name,
                     phone:phone,
@@ -42,12 +43,13 @@ export class Customer {
           })
      }
 
-     async editCustomer({customer_id,customer_name,short_name,phone,address,callback}:ICustomerEdit){
+     async editCustomer({customer_id,customer_name,short_name,phone,address,price_id,callback}:ICustomerEdit){
           await customer.update({
                where:{
                     id:customer_id
                },
                data:{
+                    pirce_id:price_id,
                     customer_name: customer_name,
                     short_name: short_name,
                     address:address,

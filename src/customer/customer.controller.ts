@@ -51,9 +51,9 @@ const fetchCustomer = async (req: Request, res: Response) => {
 const createCustomer = async (req: Request, res: Response) => {
      const customer = new Customer();
      try {
-          const {customer_name,short_name,phone,address} = req.body
+          const {customer_name,short_name,phone,address,price_id} = req.body
           const data = await customer.createCustomer({
-               customer_name,short_name,phone,address,
+               customer_name,short_name,phone,address,price_id,
                callback: (err: any, data: any) => {
                     if (err) {
                          return Responser({
@@ -142,9 +142,9 @@ const editCustomer = async (req: Request, res: Response) => {
      const customer = new Customer();
      try {
           const {customer_id} = req.params
-          const {customer_name,short_name,phone,address} = req.body
+          const {customer_name,short_name,phone,address,price_id} = req.body
           const data = await customer.editCustomer({
-               customer_id,customer_name,short_name,phone,address,
+               customer_id,customer_name,short_name,phone,address,price_id,
                callback: (err: any, data: any) => {
                     if (err) {
                          return Responser({

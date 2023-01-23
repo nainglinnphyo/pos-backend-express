@@ -47,6 +47,7 @@ Table products {
 Table prices {
   id String [pk]
   name String [not null]
+  Customer customers [not null]
   ProductPriceList product_price_list [not null]
   CompositePriceList composite_price_list [not null]
   created_at DateTime [default: `now()`, not null]
@@ -114,6 +115,8 @@ Table customers {
   short_name String
   address String
   phone String
+  pirce_id String
+  pirce prices
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
   SaleVoucher sale_voucher [not null]
@@ -247,6 +250,8 @@ Ref: composite.unit_id > units.id [delete: Cascade]
 Ref: composite_price_list.composite_id > composite.id [delete: Cascade]
 
 Ref: composite_price_list.price_id > prices.id [delete: Cascade]
+
+Ref: customers.pirce_id > prices.id
 
 Ref: instock_voucher.supplier_id > suppliers.id [delete: Cascade]
 
