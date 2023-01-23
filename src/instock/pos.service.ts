@@ -394,4 +394,12 @@ export class Pos {
           callback(null, resData)
      }
 
+     async fetchSaleTransaction({ saleVoucherId }) {
+          return saleTransaction.findMany({
+               where: {
+                    sale_voucher_id: saleVoucherId
+               }
+          })
+     }
+
 }
