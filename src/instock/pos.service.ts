@@ -405,7 +405,7 @@ export class Pos {
      async createSaleTransaction({ saleVoucherId, amount }) {
           return saleTransaction.create({
                data: {
-                    amount: amount,
+                    amount: parseInt(amount),
                     sale_voucher_id: saleVoucherId
                }
           })
