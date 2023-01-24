@@ -395,6 +395,7 @@ export class Pos {
      }
 
      async fetchSaleTransaction({ saleVoucherId }) {
+          console.log(saleVoucherId)
           return saleTransaction.findMany({
                where: {
                     sale_voucher_id: saleVoucherId

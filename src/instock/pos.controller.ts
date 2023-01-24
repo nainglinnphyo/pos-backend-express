@@ -162,7 +162,7 @@ const dashboardData = async (req: Request, res: Response) => {
 
 const fetchSaleTransaction = async (req: Request, res: Response) => {
      try {
-          const { saleVoucherId } = req.query
+          const { saleVoucherId } = req.params
           await pos.fetchSaleTransaction({ saleVoucherId })
                .then((data) => {
                     return Responser({ res, status: 200, message: "Fetch success", devMessage: "", body: data })
