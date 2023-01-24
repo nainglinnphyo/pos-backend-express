@@ -395,7 +395,6 @@ export class Pos {
      }
 
      async fetchSaleTransaction({ saleVoucherId }) {
-          console.log(saleVoucherId)
           return saleTransaction.findMany({
                where: {
                     sale_voucher_id: saleVoucherId
@@ -404,12 +403,34 @@ export class Pos {
      }
 
      async createSaleTransaction({ saleVoucherId, amount }) {
-          return saleTransaction.create({
+          const data = await saleTransaction.create({
                data: {
                     amount: parseInt(amount),
                     sale_voucher_id: saleVoucherId
                }
           })
+
+          const updateSaleVocher = await saleVoucher.update({
+               where: {
+                    id: saleVoucherId
+               },
+               data: {
+                    balance: {
+                         decrement: parseInt(amount)
+                    }
+               }
+          })
+          if (updateSaleVocher.balance === 0) {
+               const updateSaleVocher = await saleVoucher.update({
+                    where: {
+                         id: saleVoucherId
+                    },
+                    data: {
+                         voucher_status: "done"
+                    }
+               })
+          }
+          return saleVoucher.findFirst({ where: { id: saleVoucherId } })
      }
 
 }
