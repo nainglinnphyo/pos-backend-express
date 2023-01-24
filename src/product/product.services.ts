@@ -179,4 +179,17 @@ export class Product {
         }
      }
 
+    async deletProduct({product_id,callback}){
+      console.log(product_id);
+      await product.delete({
+           where:{
+                id: product_id
+           }
+      })
+      .then((data)=>callback(null,data))
+      .catch((err)=>{
+           callback(err.meta.cause,null)
+      })
+ }
+
 }

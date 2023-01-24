@@ -296,4 +296,51 @@ const fetchPirceList = async (req: Request, res: Response) => {
 
      }
 }
-export const productController = { editProductPriceList,editProduct, createProduct, fetchProduct, createProductPriceList,fetchProductPriceList,fetchPirceList };
+
+const deleteProduct = async (req:Request, res:Response) => {
+     const product = new Product();
+     try {
+          const {product_id} = req.params;
+          const data = await product.deletProduct({
+               product_id,
+               callback: (err: any, data: any) => {
+                    if (err) {
+                         return Responser({
+                              res: res,
+                              status: 400,
+                              body: null,
+                              message: "Somethin went wrong with product delete",
+                              devMessage: err,
+                         });
+                    } else if (data) {
+                         return Responser({
+                              res: res,
+                              status: 200,
+                              body: data,
+                              message: "product delete success!",
+                              devMessage: "",
+                         });
+                    } else {
+                         return Responser({
+                              res: res,
+                              status: 500,
+                              body: null,
+                              message: err,
+                              devMessage: err.message,
+                         });
+                    }
+               }
+          })
+     } catch (error) {
+          return Responser({
+               res: res,
+               status: 500,
+               body: null,
+               message: error,
+               devMessage: error.message,
+          });
+     }
+
+}
+
+export const productController = { editProductPriceList,editProduct, createProduct, fetchProduct, createProductPriceList,fetchProductPriceList,fetchPirceList ,deleteProduct};
