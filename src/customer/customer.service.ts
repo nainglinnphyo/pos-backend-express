@@ -4,7 +4,11 @@ const { customer } = new PrismaClient();
 
 export class Customer {
      async fetchCustomer({callback }) {
-          await customer.findMany()
+          await customer.findMany({
+               include:{
+                    SaleVoucher:true,
+               }
+          })
           .then((data)=>{
                callback(null, data)
           })
