@@ -58,4 +58,18 @@ export class Supplier {
           }
      }
 
+     async deleteSupplier({supplier_id,callback}){
+          console.log(supplier_id);
+          await supplier.delete({
+               where:{
+                    id: supplier_id
+               }
+          })
+          .then((data)=>callback(null,data))
+          .catch((err)=>{
+               callback(err.meta.cause,null)
+          })
+     }
+
+
 }
