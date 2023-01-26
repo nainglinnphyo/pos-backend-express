@@ -16,6 +16,7 @@ interface ISaleData {
      product_id: string;
      total_quantity: number;
      total_amount: number;
+     product_price_id: string;
 
 }
 interface ICreateInstock {
@@ -174,6 +175,7 @@ export class Pos {
                                    total_quantity: parseInt(element.total_quantity.toString()),
                                    product_id: element.product_id,
                                    sale_voucher_id: saleVoucherData.id,
+                                   product_price_id: element.product_price_id
                               }
                          }).then(async (data) => {
                               await inStockOnProduct.findFirst({
@@ -431,6 +433,23 @@ export class Pos {
                })
           }
           return saleVoucher.findFirst({ where: { id: saleVoucherId } })
+     }
+
+     async fetchSaleInvoiceDetails({ invoiceId }) {
+          return saleVoucher.findFirst({
+               where: {
+                    id: invoiceId
+               },
+               include: {
+                    Customer: true,
+                    SaleItem: {
+                         include: {
+                              Product: true,
+                         }
+                    },
+                    SaleTransaction: true,
+               }
+          })
      }
 
 }

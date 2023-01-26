@@ -89,8 +89,9 @@ model ProductPriceList {
   price_id   String
   Price      Price   @relation(fields: [price_id], references: [id], onDelete: Cascade)
 
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+  SaleItem   SaleItem[]
 
   @@map("product_price_list")
 }
@@ -285,16 +286,17 @@ model SaleTransaction {
 }
 
 model SaleItem {
-  id              String      @id @default(uuid())
-  total_quantity  Int
-  total_amount    Float
-  sale_voucher_id String
-  SaleVoucher     SaleVoucher @relation(fields: [sale_voucher_id], references: [id], onDelete: Cascade)
-  product_id      String
-  Product         Product     @relation(fields: [product_id], references: [id], onDelete: Cascade)
-
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id               String           @id @default(uuid())
+  total_quantity   Int
+  total_amount     Float
+  sale_voucher_id  String
+  SaleVoucher      SaleVoucher      @relation(fields: [sale_voucher_id], references: [id], onDelete: Cascade)
+  product_id       String
+  Product          Product          @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  product_price_id String?
+  ProductPriceList ProductPriceList? @relation(fields: [product_price_id], references: [id], onDelete: Cascade)
+  created_at       DateTime         @default(now())
+  updated_at       DateTime         @updatedAt
 
   @@map("sale_items")
 }

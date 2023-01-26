@@ -63,6 +63,7 @@ Table product_price_list {
   Price prices [not null]
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
+  SaleItem sale_items [not null]
 }
 
 Table composite {
@@ -210,6 +211,8 @@ Table sale_items {
   SaleVoucher sale_voucher [not null]
   product_id String [not null]
   Product products [not null]
+  product_price_id String
+  ProductPriceList product_price_list
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
 }
@@ -282,6 +285,8 @@ Ref: sale_transactions.sale_voucher_id > sale_voucher.id [delete: Cascade]
 Ref: sale_items.sale_voucher_id > sale_voucher.id [delete: Cascade]
 
 Ref: sale_items.product_id > products.id [delete: Cascade]
+
+Ref: sale_items.product_price_id > product_price_list.id [delete: Cascade]
 
 Ref: transaction.issued_by_id > users.id [delete: Cascade]
 
