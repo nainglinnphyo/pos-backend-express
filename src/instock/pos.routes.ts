@@ -13,5 +13,6 @@ posRouter.get('/fetch-sale-invoice', posController.fetchSaleInvoiceList)
 posRouter.get('/fetch-dashboard-data', posController.dashboardData)
 posRouter.get('/fetch-sale-transaction/:saleVoucherId', posController.fetchSaleTransaction)
 posRouter.post('/create-sale-transaction', posController.createSaleTransaction)
+posRouter.get('/sale-invoice-details/:invoiceId', posController.fetchSaleInvoiceDetails)
 
 export default posRouter;

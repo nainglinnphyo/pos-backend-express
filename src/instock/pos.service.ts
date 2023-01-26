@@ -445,6 +445,11 @@ export class Pos {
                     SaleItem: {
                          include: {
                               Product: true,
+                              ProductPriceList: {
+                                   include: {
+                                        Price: true
+                                   }
+                              }
                          }
                     },
                     SaleTransaction: true,
