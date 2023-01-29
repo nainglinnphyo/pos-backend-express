@@ -7,15 +7,16 @@ interface IProduct {
      product_code: string;
      category_id: number;
      unit_id: string;
+     purchase_price: number;
 
 }
 
 const createProduct = async (req: Request, res: Response) => {
      const product = new Product();
      try {
-          const { product_code, product_name, category_id, unit_id }: IProduct = req.body;
+          const { product_code, product_name, category_id, unit_id, purchase_price, pirce_data } = req.body;
           const data = await product.createProdcut({
-               product_code, product_name, category_id, unit_id,
+               product_code, product_name, category_id, unit_id, purchase_price, pirce_data,
                callback: (err: any, data: any) => {
                     if (err) {
                          return Responser({
@@ -96,9 +97,9 @@ const fetchProduct = async (req: Request, res: Response) => {
 const createProductPriceList = async (req: Request, res: Response) => {
      try {
           const product = new Product();
-          const { product_id,price_id,amount } = req.body
+          const { product_id, price_id, amount } = req.body
           const resData = await product.createProductPriceList({
-               product_id,price_id,amount, callback: (err: any, data: any) => {
+               product_id, price_id, amount, callback: (err: any, data: any) => {
                     if (err) {
                          return Responser({
                               res: res,
@@ -134,9 +135,9 @@ const createProductPriceList = async (req: Request, res: Response) => {
 const editProductPriceList = async (req: Request, res: Response) => {
      try {
           const product = new Product();
-          const { product_id,data } = req.body
+          const { product_id, data } = req.body
           const resData = await product.editProductPrice({
-               product_id,data, callback: (err: any, data: any) => {
+               product_id, data, callback: (err: any, data: any) => {
                     if (err) {
                          return Responser({
                               res: res,
@@ -173,7 +174,7 @@ const editProduct = async (req: Request, res: Response) => {
      try {
           const product = new Product();
 
-          const { id, product_name, product_code, category_id, unit_id,purchase_price } = req.body;
+          const { id, product_name, product_code, category_id, unit_id, purchase_price } = req.body;
           const data = await product.productEdit({
                id,
                product_name,
@@ -219,7 +220,7 @@ const fetchProductPriceList = async (req: Request, res: Response) => {
      try {
           const product = new Product();
 
-          const { product_id} = req.query;
+          const { product_id } = req.query;
           const data = await product.fetchProductPriceList({
                product_id,
                callback: (err: any, data: any) => {
@@ -260,47 +261,81 @@ const fetchPirceList = async (req: Request, res: Response) => {
      try {
           const product = new Product();
 
-          const { product_id} = req.query;
-          const data = await product.fetchPriceList({
-               product_id,
-               callback: (err: any, data: any) => {
-                    if (err) {
-                         return Responser({
-                              res: res,
-                              status: 400,
-                              body: null,
-                              message: "Somethin went wrong with product price list fetch",
-                              devMessage: err.message,
-                         });
-                    } else if (data) {
-                         return Responser({
-                              res: res,
-                              status: 200,
-                              body: data,
-                              message: "Price list fetch Success!",
-                              devMessage: "",
-                         });
-                    } else {
-                         return Responser({
-                              res: res,
-                              status: 500,
-                              body: null,
-                              message: err,
-                              devMessage: err.message,
-                         });
+          const { product_id } = req.query;
+          if (product_id) {
+               await product.fetchPriceList({
+                    product_id,
+                    callback: (err: any, data: any) => {
+                         if (err) {
+                              return Responser({
+                                   res: res,
+                                   status: 400,
+                                   body: null,
+                                   message: "Somethin went wrong with product price list fetch",
+                                   devMessage: err.message,
+                              });
+                         } else if (data) {
+                              return Responser({
+                                   res: res,
+                                   status: 200,
+                                   body: data,
+                                   message: "Price list fetch Success!",
+                                   devMessage: "",
+                              });
+                         } else {
+                              return Responser({
+                                   res: res,
+                                   status: 500,
+                                   body: null,
+                                   message: err,
+                                   devMessage: err.message,
+                              });
+                         }
                     }
-               }
 
-          })
+               })
+          } else {
+               await product.fetchPriceListWithoutProduct({
+                    callback: (err: any, data: any) => {
+                         if (err) {
+                              return Responser({
+                                   res: res,
+                                   status: 400,
+                                   body: null,
+                                   message: "Somethin went wrong with product price list fetch",
+                                   devMessage: err.message,
+                              });
+                         } else if (data) {
+                              return Responser({
+                                   res: res,
+                                   status: 200,
+                                   body: data,
+                                   message: "Price list fetch Success!",
+                                   devMessage: "",
+                              });
+                         } else {
+                              return Responser({
+                                   res: res,
+                                   status: 500,
+                                   body: null,
+                                   message: err,
+                                   devMessage: err.message,
+                              });
+                         }
+                    }
+
+               })
+          }
+
      } catch (error) {
 
      }
 }
 
-const deleteProduct = async (req:Request, res:Response) => {
+const deleteProduct = async (req: Request, res: Response) => {
      const product = new Product();
      try {
-          const {product_id} = req.params;
+          const { product_id } = req.params;
           const data = await product.deletProduct({
                product_id,
                callback: (err: any, data: any) => {
@@ -343,4 +378,4 @@ const deleteProduct = async (req:Request, res:Response) => {
 
 }
 
-export const productController = { editProductPriceList,editProduct, createProduct, fetchProduct, createProductPriceList,fetchProductPriceList,fetchPirceList ,deleteProduct};
+export const productController = { editProductPriceList, editProduct, createProduct, fetchProduct, createProductPriceList, fetchProductPriceList, fetchPirceList, deleteProduct };

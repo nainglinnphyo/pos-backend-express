@@ -148,7 +148,7 @@ export class Pos {
                .catch((err) => callback(err, null))
      }
 
-     async createSale({ customer_id, parseIntTotal, parseIntGrandTotal, parseIntDiscount, saleData, parseIntPaid, parseIntBalance, transaction_remark, payment_method_id, callback }: ICreateSale) {
+     async createSale({ customer_id, parseIntTotal, parseIntGrandTotal, parseIntDiscount, saleData, parseIntPaid, parseIntBalance, transaction_remark, callback }: ICreateSale) {
           await saleVoucher.create({
                data: {
                     customer_id: customer_id,
@@ -202,20 +202,9 @@ export class Pos {
                                    callback(err, null)
                               })
                     }
-                    await transaction.create({
-                         data: {
-                              paid: parseIntPaid,
-                              balance: parseIntBalance,
-                              remark: transaction_remark,
-                              total: parseIntTotal,
-                              payment_method_id: payment_method_id,
-                              sale_voucher_id: saleVoucherData.id
-                         }
-                    })
-                         .then(async () => {
-                              const returnData = await saleVoucher.findUnique({ where: { id: saleVoucherData.id }, include: { SaleItem: true, Transaction: true } })
-                              callback(null, returnData)
-                         })
+
+                    const returnData = await saleVoucher.findUnique({ where: { id: saleVoucherData.id }, include: { SaleItem: true, Transaction: true } })
+                    callback(null, returnData)
                })
                .catch((err) => callback(err, null))
      }
@@ -444,12 +433,17 @@ export class Pos {
                     Customer: true,
                     SaleItem: {
                          include: {
-                              Product: true,
+                              Product: {
+                                   include: {
+                                        Unit: true
+                                   }
+                              },
                               ProductPriceList: {
                                    include: {
                                         Price: true
                                    }
-                              }
+                              },
+
                          }
                     },
                     SaleTransaction: true,
