@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import moment from 'moment';
 import { superLog } from '../utilities/superLog';
-const { inStockVoucher, paymentMethod, product, customer, saleTransaction, warehouse, instock, inStockOnProduct, transaction, productPriceList, saleVoucher, saleItem } = new PrismaClient();
+const { inStockVoucher, paymentMethod, product, customer, price, saleTransaction, warehouse, instock, inStockOnProduct, transaction, productPriceList, saleVoucher, saleItem } = new PrismaClient();
 
 interface IInstockData {
      product_id: string;
@@ -449,6 +449,10 @@ export class Pos {
                     SaleTransaction: true,
                }
           })
+     }
+
+     async fetchPriceList() {
+          return price.findMany();
      }
 
 }

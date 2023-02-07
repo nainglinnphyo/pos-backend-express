@@ -118,6 +118,8 @@ Table customers {
   phone String
   pirce_id String
   pirce prices
+  balance Float [default: 0]
+  credit Float [default: 0]
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
   SaleVoucher sale_voucher [not null]

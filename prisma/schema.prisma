@@ -167,6 +167,8 @@ model Customer {
   phone         String?
   pirce_id      String?
   pirce         Price?  @relation(fields: [pirce_id], references: [id])
+  balance       Float?  @default(0)
+  credit        Float?  @default(0)
 
   created_at  DateTime      @default(now())
   updated_at  DateTime      @updatedAt
@@ -286,17 +288,17 @@ model SaleTransaction {
 }
 
 model SaleItem {
-  id               String           @id @default(uuid())
+  id               String            @id @default(uuid())
   total_quantity   Int
   total_amount     Float
   sale_voucher_id  String
-  SaleVoucher      SaleVoucher      @relation(fields: [sale_voucher_id], references: [id], onDelete: Cascade)
+  SaleVoucher      SaleVoucher       @relation(fields: [sale_voucher_id], references: [id], onDelete: Cascade)
   product_id       String
-  Product          Product          @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  Product          Product           @relation(fields: [product_id], references: [id], onDelete: Cascade)
   product_price_id String?
   ProductPriceList ProductPriceList? @relation(fields: [product_price_id], references: [id], onDelete: Cascade)
-  created_at       DateTime         @default(now())
-  updated_at       DateTime         @updatedAt
+  created_at       DateTime          @default(now())
+  updated_at       DateTime          @updatedAt
 
   @@map("sale_items")
 }
