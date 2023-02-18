@@ -149,6 +149,18 @@ export class Pos {
      }
 
      async createSale({ customer_id, parseIntTotal, parseIntGrandTotal, parseIntDiscount, saleData, parseIntPaid, parseIntBalance, transaction_remark, callback }: ICreateSale) {
+          if (parseIntBalance !== 0) {
+               await customer.update({
+                    where: {
+                         id: customer_id
+                    },
+                    data: {
+                         credit: {
+                              increment: parseIntBalance
+                         }
+                    }
+               })
+          }
           await saleVoucher.create({
                data: {
                     customer_id: customer_id,
@@ -393,35 +405,97 @@ export class Pos {
           })
      }
 
-     async createSaleTransaction({ saleVoucherId, amount }) {
-          const data = await saleTransaction.create({
-               data: {
-                    amount: parseInt(amount),
-                    sale_voucher_id: saleVoucherId
-               }
-          })
-
-          const updateSaleVocher = await saleVoucher.update({
-               where: {
-                    id: saleVoucherId
-               },
-               data: {
-                    balance: {
-                         decrement: parseInt(amount)
+     async createSaleTransaction({ customer_id, saleVoucherId, amount, type }) {
+          if (type === 'cash') {
+               const data = await saleTransaction.create({
+                    data: {
+                         amount: parseInt(amount),
+                         sale_voucher_id: saleVoucherId
                     }
-               }
-          })
-          if (updateSaleVocher.balance === 0) {
+               })
+
                const updateSaleVocher = await saleVoucher.update({
                     where: {
                          id: saleVoucherId
                     },
                     data: {
-                         voucher_status: "done"
+                         balance: {
+                              decrement: parseInt(amount)
+                         }
                     }
                })
+               if (updateSaleVocher.balance === 0) {
+                    const updateSaleVocher = await saleVoucher.update({
+                         where: {
+                              id: saleVoucherId
+                         },
+                         data: {
+                              voucher_status: "done"
+                         }
+                    })
+               }
+               return saleVoucher.findFirst({ where: { id: saleVoucherId } })
+          } else {
+               const customerData = await customer.findFirst({
+                    where: {
+                         id: customer_id
+                    },
+                    select: {
+                         balance: true
+                    }
+               })
+               if ((customerData?.balance || 0) >= amount) {
+                    const data = await saleTransaction.create({
+                         data: {
+                              amount: parseInt(amount),
+                              sale_voucher_id: saleVoucherId
+                         },
+                         include: {
+                              SaleVoucher: {
+                                   include: {
+                                        Customer: true
+                                   }
+                              }
+                         }
+                    })
+
+                    await customer.update({
+                         where: {
+                              id: data.SaleVoucher.Customer.id
+                         },
+                         data: {
+                              balance: {
+                                   decrement: amount
+                              }
+                         }
+                    })
+
+                    const updateSaleVocher = await saleVoucher.update({
+                         where: {
+                              id: saleVoucherId
+                         },
+                         data: {
+                              balance: {
+                                   decrement: parseInt(amount)
+                              }
+                         }
+                    })
+                    if (updateSaleVocher.balance === 0) {
+                         const updateSaleVocher = await saleVoucher.update({
+                              where: {
+                                   id: saleVoucherId
+                              },
+                              data: {
+                                   voucher_status: "done"
+                              }
+                         })
+                    }
+               } else {
+                    return false;
+               }
           }
-          return saleVoucher.findFirst({ where: { id: saleVoucherId } })
+
+
      }
 
      async fetchSaleInvoiceDetails({ invoiceId }) {

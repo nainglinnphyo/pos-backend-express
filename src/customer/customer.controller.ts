@@ -48,12 +48,58 @@ const fetchCustomer = async (req: Request, res: Response) => {
 
 }
 
+const addBalance = async (req: Request, res: Response) => {
+     const customer = new Customer();
+     const { id, amount } = req.body
+     try {
+          const data = await customer.addBalance({
+               id, amount,
+               callback: (err: any, data: any) => {
+                    if (err) {
+                         return Responser({
+                              res: res,
+                              status: 400,
+                              body: null,
+                              message: "Somethin went wrong with customer fetch",
+                              devMessage: err.message,
+                         });
+                    } else if (data) {
+                         return Responser({
+                              res: res,
+                              status: 200,
+                              body: data,
+                              message: "Balance add success!",
+                              devMessage: "",
+                         });
+                    } else {
+                         return Responser({
+                              res: res,
+                              status: 500,
+                              body: null,
+                              message: err,
+                              devMessage: err.message,
+                         });
+                    }
+               }
+          })
+     } catch (error) {
+          return Responser({
+               res: res,
+               status: 500,
+               body: null,
+               message: error,
+               devMessage: error.message,
+          });
+     }
+
+}
+
 const createCustomer = async (req: Request, res: Response) => {
      const customer = new Customer();
      try {
-          const {customer_name,short_name,phone,address,price_id} = req.body
+          const { customer_name, short_name, phone, address, price_id } = req.body
           const data = await customer.createCustomer({
-               customer_name,short_name,phone,address,price_id,
+               customer_name, short_name, phone, address, price_id,
                callback: (err: any, data: any) => {
                     if (err) {
                          return Responser({
@@ -96,7 +142,7 @@ const createCustomer = async (req: Request, res: Response) => {
 const deleteCustomer = async (req: Request, res: Response) => {
      const customer = new Customer();
      try {
-          const {customer_id} = req.params
+          const { customer_id } = req.params
           const data = await customer.deleteCustomer({
                customer_id,
                callback: (err: any, data: any) => {
@@ -141,10 +187,10 @@ const deleteCustomer = async (req: Request, res: Response) => {
 const editCustomer = async (req: Request, res: Response) => {
      const customer = new Customer();
      try {
-          const {customer_id} = req.params
-          const {customer_name,short_name,phone,address,price_id} = req.body
+          const { customer_id } = req.params
+          const { customer_name, short_name, phone, address, price_id } = req.body
           const data = await customer.editCustomer({
-               customer_id,customer_name,short_name,phone,address,price_id,
+               customer_id, customer_name, short_name, phone, address, price_id,
                callback: (err: any, data: any) => {
                     if (err) {
                          return Responser({
@@ -185,4 +231,4 @@ const editCustomer = async (req: Request, res: Response) => {
 }
 
 
-export const customerController = { fetchCustomer ,createCustomer,deleteCustomer,editCustomer};
+export const customerController = { fetchCustomer, createCustomer, deleteCustomer, editCustomer ,addBalance};

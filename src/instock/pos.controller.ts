@@ -177,13 +177,18 @@ const fetchSaleTransaction = async (req: Request, res: Response) => {
 
 const createSaleTransaction = async (req: Request, res: Response) => {
      try {
-          const { saleVoucherId, amount } = req.body
-          await pos.createSaleTransaction({ saleVoucherId, amount })
+          const { saleVoucherId, amount, type, customer_id } = req.body
+          await pos.createSaleTransaction({ saleVoucherId, amount, type, customer_id })
                .then((data) => {
-                    return Responser({ res, status: 200, message: "Crate Success", devMessage: "", body: data })
+                    if (data) {
+                         return Responser({ res, status: 200, message: "Crate Success", devMessage: "", body: data })
+                    } else {
+                         return Responser({ res, status: 400, message: "Customer Balance is not enough", devMessage: "Customer Balance is not enough", body: null })
+
+                    }
                })
                .catch((err) => {
-                    return Responser({ res, status: 400, message: err.message, devMessage: err.message, body: null })
+                    return Responser({ res, status: 400, message: "Something went wrong", devMessage: "Something went wrong", body: null })
                })
      } catch (error) {
 
