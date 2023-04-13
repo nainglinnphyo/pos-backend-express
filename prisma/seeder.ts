@@ -7,9 +7,9 @@ const salt = bcrypt.genSaltSync(10);
 const load = async () => {
      await user.create({
           data: {
-               username:"tester",
-               email: "tester@gmail.com",
-               password: bcrypt.hashSync('123456', salt)
+               username:"user",
+               email: "yama@gmail.com",
+               password: bcrypt.hashSync('yama@gmail.com', salt)
         }
      })
      logger.info('Added Campaign data')
