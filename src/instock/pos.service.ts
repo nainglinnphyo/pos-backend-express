@@ -29,7 +29,6 @@ interface ICreateInstock {
      parseIntPaid: number;
      parseIntBalance: number;
      transaction_remark: string;
-     payment_method_id: string;
      callback: any;
 }
 
@@ -42,7 +41,6 @@ interface ICreateSale {
      parseIntPaid: number;
      parseIntBalance: number;
      transaction_remark: string;
-     payment_method_id: string;
      callback: any;
 }
 
@@ -73,7 +71,7 @@ function Last10Days() {
 
 export class Pos {
 
-     async createInstock({ supplier_id, parseIntTotal, parseIntGrandTotal, parseIntDiscount, warehouse_id, instockData, parseIntPaid, parseIntBalance, transaction_remark, payment_method_id, callback }: ICreateInstock) {
+     async createInstock({ supplier_id, parseIntTotal, parseIntGrandTotal, parseIntDiscount, warehouse_id, instockData, parseIntPaid, parseIntBalance, transaction_remark, callback }: ICreateInstock) {
           await inStockVoucher.create({
                data: {
                     supplier_id: supplier_id,
@@ -136,7 +134,7 @@ export class Pos {
                               balance: parseIntBalance,
                               remark: transaction_remark,
                               total: parseIntTotal,
-                              payment_method_id: payment_method_id,
+                              // payment_method_id: payment_method_id,
                               instock_voucher_id: inStockVoucherData.id
                          }
                     })

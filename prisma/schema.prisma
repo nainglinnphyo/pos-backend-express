@@ -49,10 +49,10 @@ model Product {
   product_code   String
   product_name   String
   purchase_price Int?     @default(0)
-  category_id    String
-  Category       Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
-  unit_id        String
-  Unit           Unit     @relation(fields: [unit_id], references: [id], onDelete: Cascade)
+  category_id    String?
+  Category       Category? @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  unit_id        String?
+  Unit           Unit?     @relation(fields: [unit_id], references: [id], onDelete: Cascade)
 
   Instock          Instock[]
   ProductPriceList ProductPriceList[]
@@ -314,8 +314,8 @@ model Transaction {
   Issued_By          User?           @relation(fields: [issued_by_id], references: [id], onDelete: Cascade)
   instock_voucher_id String?
   InStockVoucher     InStockVoucher? @relation(fields: [instock_voucher_id], references: [id], onDelete: Cascade)
-  payment_method_id  String
-  Payment_method     PaymentMethod   @relation(fields: [payment_method_id], references: [id], onDelete: Cascade)
+  payment_method_id  String?
+  Payment_method     PaymentMethod?   @relation(fields: [payment_method_id], references: [id], onDelete: Cascade)
 
   created_at      DateTime     @default(now())
   updated_at      DateTime     @updatedAt

@@ -31,10 +31,10 @@ Table products {
   product_code String [not null]
   product_name String [not null]
   purchase_price Int [default: 0]
-  category_id String [not null]
-  Category categories [not null]
-  unit_id String [not null]
-  Unit units [not null]
+  category_id String
+  Category categories
+  unit_id String
+  Unit units
   Instock instock [not null]
   ProductPriceList product_price_list [not null]
   Composite composite [not null]
@@ -229,8 +229,8 @@ Table transaction {
   Issued_By users
   instock_voucher_id String
   InStockVoucher instock_voucher
-  payment_method_id String [not null]
-  Payment_method payment_methods [not null]
+  payment_method_id String
+  Payment_method payment_methods
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [not null]
   SaleVoucher sale_voucher
